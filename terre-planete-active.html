@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b1026">
+<title>La Terre, une planète active</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b1026;--panel:#151c40;--panel2:#1d2754;--line:#2c3770;
+  --ink:#eef1ff;--muted:#aab3da;--accent:#ffb84d;--rock:#e8875a;--gas:#5cc8ff;
+  --ok:#3ddc97;--ko:#ff6b85;--violet:#a98bff;--pink:#ff8fd0;
+  --r:18px;--safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--ink);background:var(--bg);min-height:100vh;min-height:100dvh;
+  background-image:radial-gradient(1200px 600px at 80% -10%,#2a1f5c 0%,transparent 60%),
+                   radial-gradient(900px 500px at -10% 110%,#0f3a5c 0%,transparent 60%);
+  background-attachment:fixed;font-size:17px;line-height:1.5;
+  -webkit-text-size-adjust:100%;touch-action:manipulation;
+}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.55;
+  background-image:
+   radial-gradient(1.5px 1.5px at 20px 30px,#fff,transparent),
+   radial-gradient(1px 1px at 120px 80px,#fff,transparent),
+   radial-gradient(1.5px 1.5px at 200px 160px,#cfd8ff,transparent),
+   radial-gradient(1px 1px at 300px 40px,#fff,transparent),
+   radial-gradient(1px 1px at 360px 220px,#fff,transparent),
+   radial-gradient(1.5px 1.5px at 80px 260px,#ffe9c2,transparent);
+  background-size:400px 300px}
+h1,h2,h3,.fred{font-family:Fredoka,Nunito,sans-serif;letter-spacing:.2px}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.wrap{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:12px 16px calc(110px + var(--safe-b))}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;background:rgba(11,16,38,.86);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px}
+.top-in{max-width:980px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.top h1{font-size:19px;margin:0;flex:1;line-height:1.2}
+.top h1 small{display:block;font-family:Nunito;font-weight:600;color:var(--muted);font-size:13px}
+.xp{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:6px 12px 6px 8px;font-weight:800}
+.xp .star{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#3b2400;display:grid;place-items:center;font-size:14px}
+.lvl{font-size:12px;color:var(--muted);font-weight:700}
+
+/* nav */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(17,23,54,.96);border-top:1px solid var(--line);
+  padding:8px 10px calc(8px + var(--safe-b));display:flex;justify-content:center;gap:8px}
+.nav button{flex:1;max-width:240px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 6px;border-radius:14px;font-weight:800;font-size:14px;color:var(--muted);min-height:58px}
+.nav button .ic{font-size:24px;line-height:1}
+.nav button.on{background:var(--panel2);color:var(--ink);box-shadow:inset 0 0 0 2px var(--accent)}
+
+/* generic */
+.view{display:none;animation:fade .35s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin:14px 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:12px 20px;border-radius:14px;
+  font-weight:800;font-size:17px;background:var(--panel2);border:2px solid var(--line);transition:transform .1s}
+.btn:active{transform:scale(.96)}
+.btn.main{background:var(--accent);color:#2f1c00;border-color:var(--accent)}
+.btn.ghost{background:transparent}
+.btn.small{min-height:44px;padding:8px 14px;font-size:15px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}
+.tag{display:inline-block;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:800;background:var(--panel2);border:1px solid var(--line)}
+.rock{color:var(--rock)}.gas{color:var(--gas)}
+.hl{background:linear-gradient(transparent 55%,rgba(255,184,77,.35) 55%);font-weight:800}
+.retenir{border:2px solid var(--accent);background:linear-gradient(135deg,rgba(255,184,77,.13),rgba(255,184,77,.03));border-radius:var(--r);padding:16px 18px;margin:14px 0}
+.retenir h3{margin:0 0 6px;color:var(--accent);font-size:18px}
+.retenir dt{font-weight:800;margin-top:6px}
+.retenir dd{margin:0 0 4px 0}
+.probleme{border-left:5px solid var(--violet);background:rgba(169,139,255,.1);padding:10px 14px;border-radius:0 12px 12px 0;margin:10px 0;font-weight:700}
+.tip{border-left:5px solid var(--gas);background:rgba(92,200,255,.09);padding:10px 14px;border-radius:0 12px 12px 0;margin:10px 0}
+
+/* home */
+.hero{padding:20px;border-radius:24px;background:linear-gradient(135deg,#2b1f63,#173d6b);border:1px solid var(--line);margin-top:12px;display:flex;gap:16px;align-items:center}
+.hero h2{margin:0 0 4px;font-size:26px}
+.hero .planet{font-size:64px;animation:spin 18s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.chap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:16px}
+.chap{position:relative;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-height:150px;display:flex;flex-direction:column;gap:6px}
+.chap:active{transform:scale(.98)}
+.chap .num{font-family:Fredoka;font-size:14px;color:var(--muted);font-weight:700}
+.chap .emo{font-size:40px;line-height:1}
+.chap h3{margin:0;font-size:20px}
+.chap .done{position:absolute;top:12px;right:12px;background:var(--ok);color:#043;border-radius:999px;font-size:12px;font-weight:900;padding:3px 9px}
+.badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.badge{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:14px;background:var(--panel);border:1px dashed var(--line);font-weight:800;color:var(--muted)}
+.badge.got{border-style:solid;border-color:var(--accent);color:var(--ink)}
+.badge .b{font-size:24px;filter:grayscale(1);opacity:.45}
+.badge.got .b{filter:none;opacity:1}
+
+/* lesson */
+.lesson-head{display:flex;align-items:center;gap:10px;margin-top:10px}
+.lesson-head h2{margin:0;font-size:22px;flex:1}
+.prog{height:10px;background:var(--panel2);border-radius:99px;overflow:hidden;margin:10px 0 4px}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--pink));border-radius:99px;transition:width .4s}
+.step h3{font-size:21px;margin:4px 0 8px}
+.step p{margin:8px 0}
+.lesson-foot{display:flex;gap:10px;justify-content:space-between;margin-top:14px}
+.lesson-foot .btn{flex:1}
+.say-btn{min-width:52px}
+
+/* interactive bits */
+.zoom-box{height:220px;display:grid;place-items:center;border-radius:16px;background:radial-gradient(circle at center,#26306a,#0d1330);overflow:hidden;position:relative}
+.zoom-box .z-emo{font-size:96px;transition:transform .5s cubic-bezier(.3,1.5,.5,1),opacity .3s}
+.zoom-label{text-align:center;margin-top:10px}
+.zoom-label b{font-family:Fredoka;font-size:20px;display:block}
+.zoom-dots{display:flex;justify-content:center;gap:6px;margin:8px 0}
+.zoom-dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.zoom-dots i.on{background:var(--accent)}
+
+.sun-svg{width:100%;max-width:340px;display:block;margin:0 auto}
+.sun-core{animation:pulse 3s ease-in-out infinite;transform-origin:150px 150px;transform-box:view-box}
+@keyframes pulse{50%{transform:scale(1.05)}}
+.rays{animation:spin 30s linear infinite;transform-origin:150px 150px;transform-box:view-box}
+
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:10px}
+.fact{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:left;min-height:84px}
+.fact b{display:block;font-family:Fredoka;font-size:22px;color:var(--accent)}
+.fact.hidden b,.fact.hidden span{filter:blur(7px)}
+.fact.hidden::after{content:"👆 Touche pour découvrir";display:block;font-size:13px;color:var(--muted);margin-top:4px}
+
+.solar{width:100%;max-width:560px;display:block;margin:0 auto;touch-action:manipulation}
+.orbit{fill:none;stroke:#3a4683;stroke-width:1.2;stroke-dasharray:3 5}
+.spin-g{transform-box:view-box;transform-origin:400px 400px;animation:spin linear infinite}
+.paused .spin-g{animation-play-state:paused}
+.planet-hit{cursor:pointer}
+.planet-chip{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;border:2px solid var(--line);background:var(--panel2);font-weight:800;min-height:44px}
+.planet-chip i{width:14px;height:14px;border-radius:50%;display:inline-block}
+.planet-chip.sel{border-color:var(--accent)}
+.pinfo{min-height:120px}
+.pinfo h4{margin:0;font-family:Fredoka;font-size:22px}
+.kv{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:10px 0}
+.kv div{background:var(--panel2);border-radius:12px;padding:8px 10px;font-size:14px}
+.kv b{display:block;font-size:17px}
+.mnemo{font-family:Fredoka;font-size:22px;text-align:center;line-height:1.6;margin:10px 0}
+.mnemo span{display:inline-block;margin:0 3px}
+.mnemo span b{font-size:28px}
+.mnemo .r b{color:var(--rock)}.mnemo .g b{color:var(--gas)}
+.mnemo small{display:block;font-family:Nunito;font-size:12px;color:var(--muted);line-height:1}
+
+.flip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.flip{perspective:900px;height:190px}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d;-webkit-transform-style:preserve-3d}
+.flip.on .flip-in{transform:rotateY(180deg)}
+.flip-f,.flip-b{position:absolute;inset:0;border-radius:16px;padding:14px;-webkit-backface-visibility:hidden;backface-visibility:hidden;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border:1px solid var(--line)}
+.flip-f{background:linear-gradient(160deg,#25306b,#18204a)}
+.flip-f .e{font-size:54px}
+.flip-f b{font-family:Fredoka;font-size:20px}
+.flip-b{background:var(--panel2);transform:rotateY(180deg);font-size:15px}
+
+.scale-track{position:relative;height:56px;background:var(--panel2);border-radius:12px;margin:12px 0;overflow:hidden}
+.scale-track .s{position:absolute;left:0;top:0;bottom:0;display:flex;align-items:center;padding-left:10px;font-weight:800;font-size:13px;white-space:nowrap}
+.inp{font:inherit;font-size:20px;font-weight:800;width:130px;min-height:52px;padding:8px 12px;border-radius:12px;border:2px solid var(--line);background:#0e1433;color:var(--ink);text-align:center}
+.inp:focus{outline:none;border-color:var(--accent)}
+.fb{margin-top:10px;padding:10px 14px;border-radius:12px;font-weight:700;display:none}
+.fb.ok{display:block;background:rgba(61,220,151,.14);border:1px solid var(--ok)}
+.fb.ko{display:block;background:rgba(255,107,133,.12);border:1px solid var(--ko)}
+
+table.t{width:100%;border-collapse:separate;border-spacing:0;font-size:15px;margin:10px 0;overflow:hidden;border-radius:12px;border:1px solid var(--line)}
+table.t th,table.t td{padding:10px 8px;text-align:center;border-bottom:1px solid var(--line)}
+table.t th{background:var(--panel2);font-family:Fredoka;font-weight:600}
+table.t td:first-child,table.t th:first-child{text-align:left;font-weight:800}
+table.t tr:last-child td{border-bottom:0}
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.reveal{cursor:pointer;background:rgba(255,184,77,.08)}
+.reveal.hid{color:transparent;text-shadow:0 0 0 transparent;position:relative}
+.reveal.hid::after{content:"?";position:absolute;inset:0;display:grid;place-items:center;color:var(--accent);font-weight:900;font-size:20px}
+
+.earth-svg,.cut-svg,.seism-svg,.volc-svg,.rays-svg{width:100%;display:block;margin:0 auto}
+.earth-svg{max-width:560px}.cut-svg{max-width:380px}.seism-svg{max-width:640px}.volc-svg{max-width:560px}.rays-svg{max-width:520px}
+.orbit-g{transform-box:view-box;transform-origin:300px 200px;animation:spin 16s linear infinite}
+.self-g{transform-box:fill-box;transform-origin:center;animation:spin 2s linear infinite}
+.paused .orbit-g,.paused .self-g{animation-play-state:paused}
+.mode-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.mode-btns .btn.on{background:var(--accent);color:#2f1c00;border-color:var(--accent)}
+
+.layer{cursor:pointer;transition:filter .2s}
+.layer.sel{filter:brightness(1.35) drop-shadow(0 0 6px #fff)}
+
+.pendule-arm{transform-origin:150px 20px;transform-box:view-box;animation:swing 2.4s ease-in-out infinite alternate}
+@keyframes swing{from{transform:rotate(-22deg)}to{transform:rotate(22deg)}}
+.pendule-floor{transform-origin:150px 220px;transform-box:view-box;animation:spin 40s linear infinite}
+
+/* seism */
+.seism-svg .wave{fill:none;stroke:#ffd166;stroke-width:3;opacity:0}
+.seism-svg.s3 .wave{animation:wave 2.4s ease-out infinite}
+.seism-svg.s3 .wave.w2{animation-delay:.8s}.seism-svg.s3 .wave.w3{animation-delay:1.6s}
+@keyframes wave{0%{r:4;opacity:1}100%{r:150;opacity:0}}
+.seism-svg .stress{opacity:0;transition:opacity .4s}
+.seism-svg.s1 .stress,.seism-svg.s2 .stress{opacity:1}
+.seism-svg .crack{stroke-dasharray:260;stroke-dashoffset:260;transition:stroke-dashoffset .8s}
+.seism-svg.s2 .crack,.seism-svg.s3 .crack,.seism-svg.s4 .crack{stroke-dashoffset:0}
+.seism-svg .foyer,.seism-svg .lbl-foyer{opacity:0;transition:opacity .4s}
+.seism-svg.s2 .foyer,.seism-svg.s3 .foyer,.seism-svg.s4 .foyer,.seism-svg.s2 .lbl-foyer,.seism-svg.s3 .lbl-foyer,.seism-svg.s4 .lbl-foyer{opacity:1}
+.seism-svg .epi,.seism-svg .lbl-epi,.seism-svg .vline{opacity:0;transition:opacity .4s}
+.seism-svg.s4 .epi,.seism-svg.s4 .lbl-epi,.seism-svg.s4 .vline{opacity:1}
+.seism-svg.s3 .houses,.seism-svg.s4 .houses{animation:shake .25s linear infinite}
+.seism-svg.s4 .wave{animation:wave 2.4s ease-out infinite}
+.seism-svg.s4 .wave.w2{animation-delay:.8s}
+@keyframes shake{25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}
+.steps-ctrl{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.steps-ctrl .btn{min-width:52px}
+.steps-ctrl .btn.on{background:var(--accent);color:#2f1c00;border-color:var(--accent)}
+.seism-txt{min-height:72px;text-align:center;font-weight:700}
+
+.msk{margin:10px 0}
+.msk input[type=range]{width:100%;height:44px;accent-color:var(--accent)}
+.msk-out{display:flex;align-items:center;gap:12px;background:var(--panel2);border-radius:14px;padding:12px}
+.msk-out .deg{font-family:Fredoka;font-size:34px;min-width:72px;text-align:center;color:var(--accent)}
+
+/* volcano */
+.volc-svg .lava{opacity:0;transition:opacity .5s}
+.volc-svg.eff .lava{opacity:1}
+.volc-svg .flow{stroke-dasharray:14 10;animation:flow 1.2s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-48}}
+.volc-svg .plume{opacity:0;transition:opacity .5s}
+.volc-svg.exp .plume{opacity:1}
+.volc-svg .puff{transform-box:fill-box;transform-origin:center;animation:puff 2.5s ease-out infinite}
+.volc-svg .puff.p2{animation-delay:.6s}.volc-svg .puff.p3{animation-delay:1.2s}
+@keyframes puff{0%{transform:translateY(20px) scale(.6);opacity:0}30%{opacity:1}100%{transform:translateY(-40px) scale(1.3);opacity:0}}
+.volc-svg .nuee{opacity:0}
+.volc-svg.exp .nuee{animation:nuee 3s ease-in infinite}
+@keyframes nuee{0%{opacity:0;transform:translateX(0)}20%{opacity:.9}100%{opacity:0;transform:translateX(120px) translateY(60px)}}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.compare>div{background:var(--panel2);border-radius:14px;padding:12px;border:2px solid transparent}
+.compare>div.on{border-color:var(--accent)}
+.compare h4{margin:0 0 4px;font-family:Fredoka;font-size:19px}
+
+/* climate */
+.bars{display:grid;gap:14px;margin:10px 0}
+.bar-row .lab{font-weight:800;margin-bottom:4px}
+.bar{display:flex;align-items:center;gap:8px;margin:4px 0}
+.bar .nm{width:76px;font-size:14px;font-weight:700}
+.bar .tr{flex:1;height:26px;background:var(--panel2);border-radius:8px;overflow:hidden}
+.bar .tr i{display:block;height:100%;width:0;border-radius:8px;transition:width 1s ease}
+.bar .v{width:78px;text-align:right;font-weight:800;font-size:14px}
+.meteo-vs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.meteo-vs>div{background:var(--panel2);border-radius:14px;padding:14px;text-align:center}
+.meteo-vs .e{font-size:40px}
+
+/* exercises */
+.ex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:12px}
+.ex{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:6px;min-height:130px}
+.ex:active{transform:scale(.98)}
+.ex .e{font-size:34px}
+.ex b{font-family:Fredoka;font-size:19px}
+.ex .best{font-size:13px;color:var(--accent);font-weight:800}
+.q-title{font-family:Fredoka;font-size:21px;margin:6px 0 12px;line-height:1.3}
+.opts{display:grid;gap:10px}
+@media(min-width:700px){.opts.two{grid-template-columns:1fr 1fr}}
+.opt{text-align:left;min-height:56px;padding:12px 16px;border-radius:14px;background:var(--panel2);border:2px solid var(--line);font-weight:700;font-size:17px;display:flex;align-items:center;gap:10px}
+.opt .l{width:30px;height:30px;flex:none;border-radius:50%;display:grid;place-items:center;background:#0e1433;font-weight:900;font-size:14px}
+.opt.good{border-color:var(--ok);background:rgba(61,220,151,.15)}
+.opt.bad{border-color:var(--ko);background:rgba(255,107,133,.13)}
+.opt:disabled{opacity:1}
+.explain{margin-top:12px;padding:12px 14px;border-radius:12px;background:#0e1433;border:1px solid var(--line);display:none}
+.explain.on{display:block;animation:fade .3s}
+.qcount{display:flex;justify-content:space-between;color:var(--muted);font-weight:800;font-size:14px}
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:56px;padding:10px;border-radius:14px;background:#0e1433;border:1px dashed var(--line);margin:10px 0}
+.chip{padding:10px 14px;border-radius:12px;background:var(--panel2);border:2px solid var(--line);font-weight:800;min-height:48px;font-size:16px}
+.chip.sel{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,184,77,.3);transform:translateY(-2px)}
+.chip.good{border-color:var(--ok);background:rgba(61,220,151,.15)}
+.chip.bad{animation:shk .35s}
+@keyframes shk{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.bins{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bin{min-height:150px;border-radius:16px;border:2px dashed var(--line);padding:10px;display:flex;flex-direction:column;gap:8px;align-items:stretch;text-align:center}
+.bin h4{margin:0;font-family:Fredoka;font-size:18px}
+.bin.ready{border-color:var(--accent);background:rgba(255,184,77,.06)}
+.bin .chip{font-size:14px;min-height:40px;padding:6px 10px}
+.order-line{display:flex;flex-wrap:wrap;gap:6px;min-height:56px;padding:10px;border-radius:14px;background:var(--panel2);align-items:center}
+.order-line .sunb{font-size:28px}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.match .col{display:flex;flex-direction:column;gap:8px}
+.match .chip{text-align:left;font-size:15px}
+.match .chip.locked{opacity:.55;border-color:var(--ok)}
+.score-box{text-align:center;padding:24px 12px}
+.score-box .big{font-family:Fredoka;font-size:56px;color:var(--accent);line-height:1}
+.label-zone{cursor:pointer}
+.label-txt{font-weight:800;font-size:15px;fill:#fff;paint-order:stroke;stroke:#0b1026;stroke-width:4px}
+
+/* mind map */
+.mm-tools{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0}
+.mm-tools .btn.on{background:var(--accent);color:#2f1c00;border-color:var(--accent)}
+.mm-wrap{background:radial-gradient(circle at center,#1c2558,#0d1330);border-radius:22px;border:1px solid var(--line);padding:6px;overflow:hidden}
+#mm{width:100%;display:block;touch-action:manipulation}
+.mm-node{cursor:pointer}
+.mm-leaf{transition:opacity .35s}
+.mm-leaf.off,.mm-link.off{opacity:0;pointer-events:none}
+.mm-link{transition:opacity .35s}
+.mm-txt{font-family:Nunito,sans-serif;font-weight:800;fill:#fff;text-anchor:middle;dominant-baseline:middle}
+
+.confetti{position:fixed;top:-20px;width:10px;height:14px;z-index:99;pointer-events:none;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.toast{position:fixed;left:50%;bottom:calc(90px + var(--safe-b));transform:translateX(-50%) translateY(20px);opacity:0;z-index:60;background:var(--accent);color:#2f1c00;padding:10px 18px;border-radius:999px;font-weight:900;transition:all .3s;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:560px){
+  .top h1{font-size:16px}.hero{flex-direction:column;text-align:center}.hero .planet{font-size:52px}
+  .bins,.compare,.meteo-vs,.match{grid-template-columns:1fr}
+  .lesson-head h2{font-size:19px}
+}
+@media (prefers-reduced-motion:reduce){*{animation-duration:0s!important;animation-iteration-count:1!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <h1 class="fred">🌍 La Terre, une planète active<small>SVT 5e · Chapitre 1</small></h1>
+    <div class="xp" aria-label="Points d'expérience"><span class="star">★</span><span><span id="xpVal">0</span> XP<br><span class="lvl" id="lvlVal">Niveau 1</span></span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- COURS -->
+  <section class="view on" id="v-cours">
+    <div id="coursHome">
+      <div class="hero">
+        <div class="planet">🌍</div>
+        <div>
+          <h2>Mission : comprendre notre planète</h2>
+          <div class="probleme" style="margin:6px 0 0">Comment expliquer le dynamisme de notre planète Terre ?</div>
+          <p class="muted" style="margin:8px 0 0">4 missions à accomplir. Chaque mission terminée te rapporte un badge et des XP.</p>
+        </div>
+      </div>
+      <div class="chap-grid" id="chapGrid"></div>
+      <div class="card">
+        <h3 style="margin:0 0 4px">🏅 Mes badges</h3>
+        <div class="badges" id="badges"></div>
+      </div>
+    </div>
+    <div id="lesson" style="display:none"></div>
+  </section>
+
+  <!-- ENTRAINEMENT -->
+  <section class="view" id="v-ex">
+    <div id="exHome">
+      <h2 style="margin:12px 0 0">🎯 Entraînement</h2>
+      <p class="muted" style="margin:4px 0">Choisis un atelier. Les questions changent à chaque partie.</p>
+      <div class="ex-grid" id="exGrid"></div>
+    </div>
+    <div id="exPlay" style="display:none"></div>
+  </section>
+
+  <!-- CARTE MENTALE -->
+  <section class="view" id="v-map">
+    <h2 style="margin:12px 0 0">🧠 Carte mentale</h2>
+    <p class="muted" style="margin:4px 0">Touche une branche pour l'ouvrir ou la fermer. En mode défi, devine puis touche les « ? » pour vérifier.</p>
+    <div class="mm-tools">
+      <button class="btn small" id="mmAll">Tout ouvrir</button>
+      <button class="btn small" id="mmNone">Tout fermer</button>
+      <button class="btn small" id="mmQuiz">🎲 Mode défi</button>
+    </div>
+    <div class="mm-wrap"><svg id="mm" viewBox="0 0 1100 1100" role="img" aria-label="Carte mentale du chapitre"></svg></div>
+    <div class="retenir">
+      <h3>📌 Bilan du chapitre</h3>
+      <p style="margin:4px 0">La Terre fait partie des <b>8 planètes</b> du système solaire qui tournent autour du <b>Soleil</b>. C'est une planète dynamique : elle fait une <b>révolution en une année</b> et une <b>rotation en une journée</b>. Sa position et ses mouvements offrent des conditions favorables à la vie.</p>
+      <p style="margin:4px 0">Les <b>séismes</b> et les <b>éruptions volcaniques</b> sont les manifestations en surface de l'<b>activité interne</b> de la Terre. Notre planète est formée de couches superposées : <b>noyau, manteau, croûte</b> et atmosphère.</p>
+      <p style="margin:4px 0">La Terre a une <b>activité externe</b>, étudiée par la <b>météorologie</b> et la <b>climatologie</b>, causée par l'<b>inégale répartition de l'énergie solaire</b>. La moindre variation de la température moyenne déséquilibre le climat : c'est le <b>changement climatique</b>.</p>
+    </div>
+  </section>
+</main>
+
+<nav class="nav">
+  <button class="on" data-v="cours"><span class="ic">📖</span>Cours</button>
+  <button data-v="ex"><span class="ic">🎯</span>Entraînement</button>
+  <button data-v="map"><span class="ic">🧠</span>Carte mentale</button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ ÉTAT, SON, VOIX ============ */
+const KEY='paul-terre-active-v1';
+let S={xp:0,done:{},best:{}};
+try{const s=JSON.parse(localStorage.getItem(KEY));if(s)S=Object.assign(S,s)}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const $=(q,el=document)=>el.querySelector(q);
+const $$=(q,el=document)=>[...el.querySelectorAll(q)];
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function level(xp){return 1+Math.floor(xp/120)}
+function renderXP(){$('#xpVal').textContent=S.xp;$('#lvlVal').textContent='Niveau '+level(S.xp)}
+function addXP(n){const before=level(S.xp);S.xp+=n;save();renderXP();toast('+'+n+' XP');if(level(S.xp)>before){setTimeout(()=>{toast('🚀 Niveau '+level(S.xp)+' atteint !');confetti()},900)}}
+let toastT;function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),1400)}
+
+let AC=null;
+function unlockAudio(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume()}
+document.addEventListener('touchstart',unlockAudio,{once:true,passive:true});
+document.addEventListener('click',unlockAudio,{once:true});
+function beep(ok){if(!AC)return;try{const t=AC.currentTime;const notes=ok?[660,880]:[300,220];notes.forEach((f,i)=>{const o=AC.createOscillator(),g=AC.createGain();o.type=ok?'triangle':'sawtooth';o.frequency.value=f;g.gain.setValueAtTime(.0001,t+i*.1);g.gain.exponentialRampToValueAtTime(ok?.18:.08,t+i*.1+.02);g.gain.exponentialRampToValueAtTime(.0001,t+i*.1+.18);o.connect(g).connect(AC.destination);o.start(t+i*.1);o.stop(t+i*.1+.2)})}catch(e){}}
+
+let frVoice=null;
+function pickVoice(){if(!('speechSynthesis' in window))return;const v=speechSynthesis.getVoices();frVoice=v.find(x=>/fr[-_]FR/i.test(x.lang)&&/Thomas|Amélie|Audrey|Google/i.test(x.name))||v.find(x=>/^fr/i.test(x.lang))||null}
+if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
+let speaking=false;
+function speak(text,btn){if(!('speechSynthesis' in window)){toast('Lecture vocale indisponible');return}
+  if(speaking){speechSynthesis.cancel();speaking=false;if(btn)btn.textContent='🔊';return}
+  const u=new SpeechSynthesisUtterance(text);u.lang='fr-FR';if(frVoice)u.voice=frVoice;u.rate=.95;
+  u.onend=u.onerror=()=>{speaking=false;if(btn)btn.textContent='🔊'};
+  speaking=true;if(btn)btn.textContent='⏹';speechSynthesis.speak(u)}
+function stopSpeak(){if('speechSynthesis' in window)speechSynthesis.cancel();speaking=false}
+
+function confetti(){const c=['#ffb84d','#5cc8ff','#ff8fd0','#3ddc97','#a98bff'];for(let i=0;i<60;i++){const d=document.createElement('div');d.className='confetti';d.style.left=Math.random()*100+'vw';d.style.background=c[i%c.length];d.style.animationDuration=(1.6+Math.random()*1.6)+'s';d.style.animationDelay=(Math.random()*.4)+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),3800)}}
+
+/* ============ NAVIGATION ============ */
+$$('.nav button').forEach(b=>b.addEventListener('click',()=>{
+  stopSpeak();
+  $$('.nav button').forEach(x=>x.classList.toggle('on',x===b));
+  $$('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+b.dataset.v));
+  window.scrollTo({top:0,behavior:'smooth'});
+}));
+
+/* ============ DONNÉES ============ */
+const PLANETS=[
+ {n:'Mercure',t:'r',c:'#b9a99a',d:'58',diam:'4 879',temp:'+180 °C',sat:'0',fun:"La plus petite et la plus proche du Soleil. Elle n'a pas d'atmosphère : la chaleur s'échappe la nuit."},
+ {n:'Vénus',t:'r',c:'#e8c27a',d:'108',diam:'12 104',temp:'+460 °C',sat:'0',fun:"La plus chaude ! Son atmosphère très épaisse piège la chaleur. Elle tourne très lentement sur elle-même (243 jours)."},
+ {n:'Terre',t:'r',c:'#4ea3ff',d:'150',diam:'12 742',temp:'+15 °C',sat:'1 (la Lune)',fun:"La seule planète connue où il y a de la vie, grâce à l'eau liquide et à une température idéale."},
+ {n:'Mars',t:'r',c:'#e0613f',d:'228',diam:'6 779',temp:'−50 °C',sat:'2',fun:"La planète rouge, couverte de poussière riche en fer. Des robots y roulent aujourd'hui."},
+ {n:'Jupiter',t:'g',c:'#d9a066',d:'778',diam:'139 820',temp:'−110 °C',sat:'plus de 90',fun:"La géante du système solaire : plus de 1 300 Terres pourraient y tenir !"},
+ {n:'Saturne',t:'g',c:'#e9d08f',d:'1 430',diam:'116 460',temp:'−140 °C',sat:'plus de 140',fun:"Célèbre pour ses anneaux faits de glace et de morceaux de roche."},
+ {n:'Uranus',t:'g',c:'#8fe3e8',d:'2 870',diam:'50 724',temp:'−195 °C',sat:'28',fun:"Elle tourne couchée sur le côté, comme une boule qui roule."},
+ {n:'Neptune',t:'g',c:'#4f6cff',d:'4 503',diam:'49 244',temp:'−200 °C',sat:'16',fun:"La plus éloignée du Soleil, balayée par les vents les plus violents du système solaire."}
+];
+
+/* ---------- Banque de QCM (bonne réponse = index 0, mélangée à l'affichage) ---------- */
+const QCM=[
+ {ch:0,q:"Combien de planètes tournent autour du Soleil ?",o:["8","9","7","12"],e:"Il y a 8 planètes. Pluton n'est plus considérée comme une planète depuis 2006 : c'est une planète naine."},
+ {ch:0,q:"Le Soleil est…",o:["une étoile","une planète gazeuse","un satellite","une comète"],e:"Le Soleil est une étoile : une énorme boule de gaz qui produit sa propre lumière."},
+ {ch:0,q:"Une étoile est un corps céleste qui…",o:["émet sa propre lumière","tourne autour d'une planète","est formé uniquement de roches","renvoie la lumière du Soleil"],e:"Une étoile produit sa propre lumière, contrairement aux planètes qui sont éclairées par le Soleil."},
+ {ch:0,q:"Laquelle de ces planètes est gazeuse ?",o:["Saturne","Mars","Vénus","Mercure"],e:"Jupiter, Saturne, Uranus et Neptune sont les 4 planètes gazeuses."},
+ {ch:0,q:"Laquelle de ces planètes est rocheuse ?",o:["Mars","Jupiter","Uranus","Neptune"],e:"Mercure, Vénus, la Terre et Mars sont les 4 planètes rocheuses (telluriques)."},
+ {ch:0,q:"Pluton est aujourd'hui considérée comme…",o:["une planète naine","la 9e planète","une petite étoile","une comète glacée"],e:"Depuis 2006, Pluton est classée parmi les planètes naines."},
+ {ch:0,q:"Pourquoi Vénus est-elle plus chaude que Mercure ?",o:["son atmosphère épaisse","elle est plus proche du Soleil","elle tourne plus vite","elle est une planète gazeuse"],e:"Vénus est plus loin du Soleil que Mercure, mais son atmosphère épaisse retient la chaleur."},
+ {ch:0,q:"Si la Terre est à 3 cm du Soleil, Neptune est à…",o:["90 cm","9 cm","30 cm","900 cm"],e:"4 503 ÷ 150 ≈ 30, donc Neptune est 30 fois plus loin : 30 × 3 cm = 90 cm."},
+ {ch:0,q:"Le Soleil est surtout composé de…",o:["hydrogène et hélium","roches et métaux","eau et glace","oxygène et azote"],e:"Le Soleil est presque entièrement fait d'hydrogène et d'hélium."},
+ {ch:1,q:"Combien de temps dure la révolution de la Terre ?",o:["365,25 jours","23 h 56 min","24 jours","30 jours"],e:"La révolution (le tour du Soleil) dure 365,25 jours : c'est une année."},
+ {ch:1,q:"La rotation de la Terre, c'est quand elle tourne…",o:["sur elle-même","autour du Soleil","autour de la Lune","autour de Mars"],e:"La rotation, c'est tourner sur soi-même, en 23 h 56 min : c'est une journée."},
+ {ch:1,q:"Quelle couche se trouve au centre de la Terre ?",o:["le noyau","le manteau","la croûte","l'atmosphère"],e:"De l'extérieur vers le centre : croûte, manteau, noyau."},
+ {ch:1,q:"Comment connaît-on la structure interne de la Terre ?",o:["grâce aux ondes sismiques","grâce à un forage jusqu'au centre","grâce aux photos satellites","grâce à la lave des volcans"],e:"Les ondes sismiques traversent la Terre et changent selon les couches : elles permettent d'en connaître la structure."},
+ {ch:1,q:"Le pendule de Foucault a permis de prouver que…",o:["la Terre tourne sur elle-même","la Terre est plate","la Lune tourne autour de la Terre","le Soleil tourne autour de la Terre"],e:"Le plan du pendule semble tourner : en réalité, c'est la Terre qui tourne en dessous."},
+ {ch:2,q:"Le foyer d'un séisme, c'est…",o:["le lieu de rupture des roches","le point de la surface au-dessus","la vague créée dans l'océan","l'appareil qui mesure la secousse"],e:"Le foyer est le lieu, en profondeur, où les roches cassent."},
+ {ch:2,q:"L'échelle de Richter mesure…",o:["la magnitude du séisme","l'intensité des dégâts","la durée de la secousse","la profondeur du foyer"],e:"Richter mesure la magnitude (la puissance, l'énergie libérée), grâce aux sismographes."},
+ {ch:2,q:"L'échelle MSK (intensité) va de…",o:["I à XII","1 à 9","0 à 100","I à V"],e:"L'échelle MSK va de I à XII, selon les effets ressentis par la population et les dégâts."},
+ {ch:2,q:"Un tsunami est une vague géante provoquée par…",o:["un fort séisme en mer","une éruption sur terre","une grosse tempête","une marée d'équinoxe"],e:"Un fort séisme sous l'océan crée une onde très rapide (700 km/h) qui devient une vague géante sur la côte."},
+ {ch:2,q:"Pendant un séisme, quel est le bon réflexe ?",o:["se mettre sous une table","prendre l'ascenseur","téléphoner à ses amis","rester près des fenêtres"],e:"On se protège sous un meuble solide. Pas d'ascenseur, pas de téléphone."},
+ {ch:2,q:"Une éruption effusive rejette…",o:["une lave fluide","une lave visqueuse","des nuées ardentes","aucune lave"],e:"Éruption effusive = lave fluide qui coule loin (La Réunion, Hawaï)."},
+ {ch:2,q:"Le Vésuve, qui a détruit Pompéi, est un volcan…",o:["explosif","effusif","sous-marin","gazeux"],e:"Le Vésuve est un volcan explosif : lave visqueuse et nuées ardentes."},
+ {ch:2,q:"Une lave visqueuse est une lave qui…",o:["s'écoule lentement","s'écoule rapidement","est toujours froide","ne contient pas de gaz"],e:"Visqueuse = épaisse, qui s'écoule lentement. Fluide = qui s'écoule rapidement."},
+ {ch:3,q:"La météo désigne le temps qu'il fait…",o:["localement et peu de temps","en moyenne sur 30 ans","sur tout un continent","sur toute la planète"],e:"La météo : le temps qu'il fait localement, sur une courte durée."},
+ {ch:3,q:"Le climat de Beauvais est un climat…",o:["océanique dégradé","méditerranéen","montagnard","tropical"],e:"Beauvais a un climat océanique dégradé : ni chaud ni froid, pluies faibles mais régulières."},
+ {ch:3,q:"L'activité externe de la Terre est causée par…",o:["l'inégale répartition de l'énergie solaire","les séismes et les volcans","la rotation de la Lune","la chaleur du noyau"],e:"Le Soleil ne chauffe pas toute la Terre de la même façon : c'est ce qui crée vents, nuages, climats."},
+ {ch:3,q:"Quelle ville reçoit le plus d'heures de soleil par an ?",o:["Nice","Beauvais","les deux pareil","on ne peut pas savoir"],e:"Nice : 2 850 h de soleil par an, contre 1 750 h à Beauvais."},
+ {ch:3,q:"Le climat, ce sont des valeurs moyennes…",o:["sur de longues périodes","sur une seule journée","sur une seule semaine","sur une heure"],e:"Le climat se calcule sur de longues périodes (en général 30 ans) et de grandes zones."}
+];
+
+const TF=[
+ ["Le Soleil est une planète.",false,"Le Soleil est une étoile."],
+ ["Il y a 4 planètes rocheuses et 4 planètes gazeuses.",true,"Mercure, Vénus, Terre, Mars / Jupiter, Saturne, Uranus, Neptune."],
+ ["Plus on s'éloigne du Soleil, plus la température diminue.",true,"C'est vrai en général (Vénus fait exception à cause de son atmosphère)."],
+ ["Vénus et la Terre sont de vraies jumelles.",false,"Même taille et rocheuses, mais Vénus est brûlante et tourne très lentement."],
+ ["La Terre tourne sur elle-même en 365,25 jours.",false,"Ça, c'est la révolution. La rotation dure 23 h 56 min."],
+ ["Le noyau est la couche la plus externe de la Terre.",false,"Le noyau est au centre. La croûte est à l'extérieur."],
+ ["Lors d'un séisme, les roches cassent en libérant de l'énergie.",true,"Elles accumulent de l'énergie, puis cassent : l'énergie part en ondes sismiques."],
+ ["L'épicentre est situé en profondeur.",false,"C'est le foyer qui est en profondeur. L'épicentre est à la surface, juste au-dessus."],
+ ["L'échelle MSK mesure les effets du séisme sur la population.",true,"MSK = intensité, de I à XII, selon les effets observés."],
+ ["Une éruption explosive émet une lave fluide.",false,"Explosive = lave visqueuse. Effusive = lave fluide."],
+ ["La météo étudie le temps qu'il fait sur de longues périodes.",false,"C'est la climatologie. La météo, c'est le temps court et local."],
+ ["Il fait plus chaud en moyenne à Nice qu'à Beauvais.",true,"16,3 °C à Nice contre 11,6 °C à Beauvais."],
+ ["Une comète ressemble à une boule de glace et de poussières.",true,"On la compare à un iceberg qui voyage dans l'espace."],
+ ["On peut dessiner le système solaire à l'échelle sur une feuille.",false,"Les distances sont bien trop grandes pour garder les vraies proportions."]
+];
+
+const DEFS=[
+ ["Étoile","Corps céleste qui émet sa propre lumière"],
+ ["Planète rocheuse","Corps formé de roches qui tourne autour d'une étoile"],
+ ["Planète gazeuse","Corps formé de gaz qui tourne autour d'une étoile"],
+ ["Rotation","La Terre tourne sur elle-même en 23 h 56"],
+ ["Révolution","La Terre tourne autour du Soleil en 365,25 jours"],
+ ["Foyer","Lieu de rupture des roches en profondeur"],
+ ["Épicentre","Point de la surface situé au-dessus du foyer"],
+ ["Lave fluide","Lave qui s'écoule rapidement"],
+ ["Lave visqueuse","Lave qui s'écoule lentement"],
+ ["Météo","Temps qu'il fait localement sur une courte durée"],
+ ["Climat","Valeurs moyennes sur de grandes zones et de longues périodes"],
+ ["Tsunami","Vague géante provoquée par un séisme en mer"]
+];
+
+/* ============ COURS ============ */
+const BADGES=[{e:'🧑‍🚀',n:'Astronaute'},{e:'🌀',n:'Explorateur'},{e:'🌋',n:'Volcanologue'},{e:'⛅',n:'Météorologue'}];
+
+const CHAPTERS=[
+/* ---------- MISSION 1 ---------- */
+{title:"La Terre dans le système solaire",emo:"🪐",steps:[
+{h:`<h3>🔭 Où se trouve la Terre ?</h3>
+<div class="probleme">Problème : quelle place occupe la Terre dans notre système solaire ?</div>
+<p class="say">Partons du plus grand pour arriver chez nous. Touche « Zoomer » pour plonger dans l'Univers.</p>
+<div class="zoom-box"><div class="z-emo" id="zEmo">🌌</div></div>
+<div class="zoom-dots" id="zDots"></div>
+<div class="zoom-label"><b id="zT"></b><span id="zD" class="muted"></span></div>
+<div class="row" style="justify-content:center;margin-top:10px"><button class="btn" id="zOut">➖ Dézoomer</button><button class="btn main" id="zIn">➕ Zoomer</button></div>`,
+init(){const L=[['🌌',"L'Univers","Il contient des milliards de galaxies."],['💫',"Une galaxie : la Voie lactée","Notre galaxie est formée de milliards d'étoiles."],['☀️',"Une étoile : le Soleil","Notre étoile, parmi des milliards d'autres."],['🪐',"Le système solaire","8 planètes tournent autour du Soleil."],['🌍',"La Terre","La 3e planète à partir du Soleil. C'est chez nous !"]];
+ let i=0;const dots=$('#zDots');dots.innerHTML=L.map(()=>'<i></i>').join('');
+ const show=()=>{const e=$('#zEmo');e.style.transform='scale(.2)';e.style.opacity=0;setTimeout(()=>{e.textContent=L[i][0];e.style.transform='scale(1)';e.style.opacity=1},220);$('#zT').textContent=L[i][1];$('#zD').textContent=L[i][2];$$('i',dots).forEach((d,k)=>d.classList.toggle('on',k===i))};
+ $('#zIn').onclick=()=>{if(i<L.length-1){i++;show()}};$('#zOut').onclick=()=>{if(i>0){i--;show()}};show()}},
+
+{h:`<h3>☀️ Notre étoile : le Soleil</h3>
+<p class="say">Le Soleil est une <span class="hl">étoile</span> : une énorme boule de gaz qui <b>produit sa propre lumière</b>. Il fait partie de la Voie lactée.</p>
+<svg class="sun-svg" viewBox="0 0 300 300" aria-hidden="true">
+ <defs><radialGradient id="sg"><stop offset="0" stop-color="#fff7c2"/><stop offset=".5" stop-color="#ffd23f"/><stop offset="1" stop-color="#ff7b1c"/></radialGradient></defs>
+ <g class="rays">${Array.from({length:16},(_,k)=>`<rect x="146" y="8" width="8" height="40" rx="4" fill="#ffb347" opacity=".7" transform="rotate(${k*22.5} 150 150)"/>`).join('')}</g>
+ <circle class="sun-core" cx="150" cy="150" r="88" fill="url(#sg)"/>
+ <circle cx="150" cy="150" r="30" fill="#fff" opacity=".35"/>
+ <text x="150" y="156" text-anchor="middle" font-family="Fredoka" font-size="16" fill="#7a3a00" font-weight="700">15 millions °C</text>
+</svg>
+<p class="muted" style="text-align:center;margin:0">Touche les cartes pour découvrir ses secrets.</p>
+<div class="facts">
+ <button class="fact hidden"><b>H + He</b><span>Il est fait presque entièrement de deux gaz : l'hydrogène et l'hélium.</span></button>
+ <button class="fact hidden"><b>5 500 °C</b><span>C'est la température à sa surface.</span></button>
+ <button class="fact hidden"><b>15 millions °C</b><span>Au centre ! Le Soleil y fonctionne comme un réacteur nucléaire qui transforme l'hydrogène en hélium.</span></button>
+ <button class="fact hidden"><b>Des milliards d'années</b><span>Il est si massif qu'il pourra encore briller pendant des milliards d'années.</span></button>
+</div>`,
+init(el){$$('.fact',el).forEach(f=>f.onclick=()=>{if(f.classList.contains('hidden')){f.classList.remove('hidden');beep(true)}})}},
+
+{h:`<h3>🪐 Les 8 planètes</h3>
+<p class="say">Huit planètes <b>gravitent</b>, c'est-à-dire tournent, autour du Soleil. Touche une planète pour l'explorer.</p>
+<div class="mode-btns"><button class="btn small" id="sPause">⏸ Pause</button><button class="btn small" id="sType">🎨 Rocheuses / gazeuses</button></div>
+<div id="solarBox"></div>
+<div class="row" id="pChips" style="justify-content:center;margin:8px 0"></div>
+<div class="card pinfo" id="pInfo"><p class="muted" style="margin:0">👆 Choisis une planète.</p></div>
+<div class="tip"><b>Astuce pour retenir l'ordre :</b></div>
+<div class="mnemo">
+ <span class="r"><b>Me</b><small>Mercure</small></span><span class="r"><b>V</b>oici<small>Vénus</small></span><span class="r"><b>T</b>oute<small>Terre</small></span><span class="r"><b>M</b>ignonne,<small>Mars</small></span><br>
+ <span class="g"><b>J</b>e<small>Jupiter</small></span><span class="g"><b>S</b>uis<small>Saturne</small></span><span class="g"><b>U</b>ne<small>Uranus</small></span><span class="g"><b>N</b>ouvelle<small>Neptune</small></span>
+</div>`,
+init(el){const R=[60,88,118,150,205,255,305,355],SZ=[7,11,12,9,26,22,16,15],DUR=[6,10,14,20,40,60,90,120];
+ let svg=`<svg class="solar" viewBox="0 0 800 800" id="solarSvg"><defs><radialGradient id="sg2"><stop offset="0" stop-color="#fff7c2"/><stop offset="1" stop-color="#ff8a1c"/></radialGradient></defs>`;
+ R.forEach(r=>svg+=`<circle class="orbit" cx="400" cy="400" r="${r}"/>`);
+ svg+=`<circle cx="400" cy="400" r="34" fill="url(#sg2)"/>`;
+ PLANETS.forEach((p,i)=>{const a=Math.random()*360;svg+=`<g class="spin-g" style="animation-duration:${DUR[i]}s;animation-delay:-${(a/360*DUR[i]).toFixed(1)}s"><g class="planet-hit" data-i="${i}"><circle cx="${400+R[i]}" cy="400" r="${Math.max(SZ[i]+12,22)}" fill="transparent"/><circle class="pdot" cx="${400+R[i]}" cy="400" r="${SZ[i]}" fill="${p.c}"/>${p.n==='Saturne'?`<ellipse cx="${400+R[i]}" cy="400" rx="36" ry="8" fill="none" stroke="#f3e2ae" stroke-width="3"/>`:''}</g></g>`});
+ svg+='</svg>';$('#solarBox',el).innerHTML=svg;
+ $('#pChips',el).innerHTML=PLANETS.map((p,i)=>`<button class="planet-chip" data-i="${i}"><i style="background:${p.c}"></i>${p.n}</button>`).join('');
+ let typeOn=false;
+ const pick=i=>{const p=PLANETS[i];$$('.planet-chip',el).forEach(c=>c.classList.toggle('sel',+c.dataset.i===i));
+  $('#pInfo',el).innerHTML=`<h4>${p.n} <span class="tag ${p.t==='r'?'rock':'gas'}">${p.t==='r'?'planète rocheuse':'planète gazeuse'}</span></h4>
+  <div class="kv"><div>Position<b>${i+1}<sup>e</sup></b></div><div>Distance au Soleil<b>${p.d} M km</b></div><div>Diamètre<b>${p.diam} km</b></div><div>Température moyenne<b>${p.temp}</b></div><div>Satellites<b>${p.sat}</b></div></div><p style="margin:0">${p.fun}</p>`;beep(true)};
+ $$('.planet-hit,.planet-chip',el).forEach(b=>b.addEventListener('click',()=>pick(+b.dataset.i)));
+ $('#sPause',el).onclick=e=>{const s=$('#solarSvg',el);s.classList.toggle('paused');e.target.textContent=s.classList.contains('paused')?'▶ Reprendre':'⏸ Pause'};
+ $('#sType',el).onclick=()=>{typeOn=!typeOn;$$('.pdot',el).forEach((d,i)=>d.setAttribute('fill',typeOn?(PLANETS[i].t==='r'?'#e8875a':'#5cc8ff'):PLANETS[i].c));$('#sType',el).classList.toggle('on',typeOn)}}},
+
+{h:`<h3>☄️ Pas seulement des planètes !</h3>
+<p class="say">D'autres corps circulent dans le système solaire. Touche chaque carte pour la retourner.</p>
+<div class="flip-grid">
+ <div class="flip"><div class="flip-in"><div class="flip-f"><span class="e">☄️</span><b>La comète</b></div><div class="flip-b">Une boule de glace et de poussières, comme un <b>iceberg</b> qui voyage. La comète Neowise, visible en France en juillet 2020, ne reviendra que dans environ <b>6 800 ans</b>.</div></div></div>
+ <div class="flip"><div class="flip-in"><div class="flip-f"><span class="e">🪨</span><b>L'astéroïde</b></div><div class="flip-b">Un bloc de roche qui tourne autour du Soleil. L'astéroïde <b>Gaspra</b>, photographié en 1993, mesure environ <b>20 km</b>.</div></div></div>
+ <div class="flip"><div class="flip-in"><div class="flip-f"><span class="e">🌙</span><b>Le satellite</b></div><div class="flip-b">Un corps qui tourne autour d'une planète. La <b>Lune</b> est le satellite naturel de la Terre.</div></div></div>
+ <div class="flip"><div class="flip-in"><div class="flip-f"><span class="e">⚪</span><b>Pluton</b></div><div class="flip-b">Longtemps appelée 9<sup>e</sup> planète, elle est classée <b>planète naine</b> depuis 2006 : elle est trop petite.</div></div></div>
+</div>
+<div class="tip">🔎 En observant les surfaces, on voit que la Lune et Mars ont des cratères et pas d'eau liquide. La Terre, elle, a des océans et de la vie : <b>est-elle unique dans l'Univers ?</b> Les scientifiques cherchent encore !</div>`,
+init(el){$$('.flip',el).forEach(f=>f.onclick=()=>f.classList.toggle('on'))}},
+
+{h:`<h3>📏 Des distances gigantesques</h3>
+<p class="say">La Terre est à 150 millions de kilomètres du Soleil. Imagine qu'on la place à seulement 3 centimètres. Neptune est à 4 503 millions de kilomètres. À quelle distance faut-il la placer ?</p>
+<div class="tip">💡 Indice : combien de fois Neptune est-elle plus loin que la Terre ? Calcule 4 503 ÷ 150, puis multiplie par 3 cm.</div>
+<div class="row"><input class="inp" id="scIn" inputmode="decimal" placeholder="? cm" aria-label="Distance en centimètres"><button class="btn main" id="scOk">Vérifier</button></div>
+<div class="fb" id="scFb"></div>
+<div id="scVis" style="display:none">
+ <div class="scale-track"><div class="s" style="width:3.3%;background:#4ea3ff">🌍</div></div>
+ <p class="muted" style="margin:-4px 0 4px;font-size:14px">Terre : 3 cm</p>
+ <div class="scale-track"><div class="s" id="nepBar" style="width:0;background:linear-gradient(90deg,#2a3a99,#4f6cff);transition:width 1.5s">🔵 Neptune : 90 cm</div></div>
+ <p style="margin:6px 0 0">Presque <b>1 mètre</b> ! Voilà pourquoi on ne peut <b>pas</b> représenter le système solaire en gardant les vraies proportions sur une feuille.</p>
+</div>`,
+init(el){const go=()=>{const v=parseFloat(($('#scIn',el).value||'').replace(',','.'));const fb=$('#scFb',el);
+ if(isNaN(v)){fb.className='fb ko';fb.textContent='Écris un nombre.';return}
+ if(Math.abs(v-90)<=1.5){fb.className='fb ok';fb.innerHTML='✅ Bravo ! 4 503 ÷ 150 ≈ 30. Neptune est 30 fois plus loin : 30 × 3 = <b>90 cm</b>.';beep(true);$('#scVis',el).style.display='block';setTimeout(()=>$('#nepBar',el).style.width='100%',50)}
+ else{fb.className='fb ko';fb.innerHTML='❌ Pas encore. Fais d\'abord 4 503 ÷ 150 (≈ 30), puis × 3.';beep(false)}};
+ $('#scOk',el).onclick=go;$('#scIn',el).addEventListener('keydown',e=>{if(e.key==='Enter')go()})}},
+
+{h:`<h3>🌡️ Pourquoi la vie sur Terre ?</h3>
+<p class="say">En théorie, plus une planète est proche de son étoile, plus elle est chaude. Mais regarde : sur certaines planètes, la température mesurée est différente !</p>
+<div class="tscroll"><table class="t">
+<tr><th>Planète</th><th>Mercure</th><th>Vénus</th><th>Terre</th><th>Mars</th></tr>
+<tr><td>Température théorique</td><td>+180 °C</td><td>+30 °C</td><td>−17 °C</td><td>−60 °C</td></tr>
+<tr><td>Température mesurée</td><td>+180 °C</td><td>+460 °C</td><td>+15 °C</td><td>−50 °C</td></tr>
+<tr><td>Atmosphère</td><td>absente</td><td>présente</td><td>présente</td><td>présente</td></tr>
+</table></div>
+<p><b>À ton avis, qu'est-ce qui fait changer la température ?</b></p>
+<button class="btn" id="hypBtn">💡 Voir l'explication</button>
+<div class="fb ok" id="hyp" style="display:none">Mercure n'a <b>pas d'atmosphère</b> : sa température ne change pas. Les autres en ont une, qui <b>retient la chaleur</b>. Plus on s'éloigne du Soleil, plus la température diminue. La Terre a la <b>bonne distance</b> au Soleil et une <b>atmosphère</b> : sa température est idéale pour la vie.</div>
+<h3 style="margin-top:18px">👯 Vénus et la Terre, jumelles ?</h3>
+<p class="muted" style="margin:0">Touche les cases « ? » pour compléter.</p>
+<div class="tscroll"><table class="t">
+<tr><th></th><th>Vénus</th><th>Terre</th></tr>
+<tr><td colspan="3" style="text-align:center;background:rgba(61,220,151,.1)">✅ Ressemblances : taille presque identique, planètes rocheuses, présence de reliefs</td></tr>
+<tr><td>Température de surface</td><td class="reveal hid">très élevée, pas de vie possible</td><td class="reveal hid">compatible avec la vie</td></tr>
+<tr><td>Durée de rotation</td><td class="reveal hid">très lente</td><td class="reveal hid">rapide</td></tr>
+</table></div>
+<p style="margin:4px 0">➡️ Elles se ressemblent, mais ce ne sont <b>pas</b> des jumelles.</p>`,
+init(el){$('#hypBtn',el).onclick=()=>{$('#hyp',el).style.display='block'};$$('.reveal',el).forEach(c=>c.onclick=()=>c.classList.remove('hid'))}},
+
+{h:`<h3>🌋 La Terre a une histoire</h3>
+<p class="say">La Terre s'est formée il y a environ <b>4,6 milliards d'années</b>, en même temps que le Soleil et les autres planètes, à partir d'un immense nuage de gaz et de poussières.</p>
+<div class="tip">Au début, la Terre était une boule brûlante bombardée par des météorites. En refroidissant, elle a formé une croûte, puis l'eau des océans est apparue.</div>
+<div class="retenir">
+ <h3>📌 À apprendre</h3>
+ <p style="margin:0 0 6px">Dans le système solaire, <b>8 planètes</b> tournent autour de notre étoile, le <b>Soleil</b>. Les 4 premières, dont la Terre, sont faites de roches : ce sont les <b class="rock">planètes rocheuses</b>. Les 4 autres sont faites de gaz, sans surface rocheuse : ce sont les <b class="gas">planètes gazeuses</b>.</p>
+ <dl>
+  <dt>Étoile</dt><dd>Corps céleste qui émet sa propre lumière.</dd>
+  <dt>Planète rocheuse</dt><dd>Corps céleste constitué de roches qui tourne autour d'une étoile.</dd>
+  <dt>Planète gazeuse</dt><dd>Corps céleste constitué de gaz qui tourne autour d'une étoile.</dd>
+ </dl>
+ <p style="margin:6px 0 0">La distance Terre-Soleil et l'atmosphère donnent une température propice à la vie.</p>
+</div>`}
+]},
+
+/* ---------- MISSION 2 ---------- */
+{title:"Forme, mouvements et structure de la Terre",emo:"🌀",steps:[
+{h:`<h3>🤔 Comment sait-on que la Terre tourne ?</h3>
+<div class="probleme">Problème : comment a-t-on découvert la forme et les mouvements de la Terre ?</div>
+<p class="say">En 1851, le physicien Léon Foucault suspend un très long pendule sous la coupole du Panthéon, à Paris. Le pendule se balance toujours dans la même direction… mais au fil des heures, on dirait qu'il tourne !</p>
+<svg viewBox="0 0 300 250" style="width:100%;max-width:320px;display:block;margin:0 auto" aria-hidden="true">
+ <rect x="110" y="8" width="80" height="12" rx="4" fill="#4b5694"/>
+ <g class="pendule-floor"><ellipse cx="150" cy="220" rx="120" ry="22" fill="#1d2754" stroke="#3a4683"/>${Array.from({length:12},(_,k)=>`<line x1="150" y1="220" x2="${150+110*Math.cos(k*Math.PI/6)}" y2="${220+20*Math.sin(k*Math.PI/6)}" stroke="#3a4683"/>`).join('')}</g>
+ <g class="pendule-arm"><line x1="150" y1="20" x2="150" y2="190" stroke="#cfd6ff" stroke-width="2"/><circle cx="150" cy="195" r="14" fill="#ffb84d"/></g>
+</svg>
+<div class="fb ok" style="display:block">👉 En réalité, le pendule ne change pas de direction : c'est la <b>Terre qui tourne sous lui</b>. C'est la preuve que la Terre tourne sur elle-même.</div>
+<p class="muted">Autre preuve : vue de l'espace, la Terre est ronde. Les éclipses montrent aussi l'ombre ronde de la Terre sur la Lune.</p>`},
+
+{h:`<h3>🔄 Rotation et révolution</h3>
+<p class="say">La Terre fait deux mouvements en même temps. Elle tourne sur elle-même : c'est la rotation. Et elle tourne autour du Soleil : c'est la révolution.</p>
+<div class="mode-btns"><button class="btn small" id="mRot">🔁 Rotation</button><button class="btn small" id="mRev">☀️ Révolution</button><button class="btn small" id="mPause">⏸ Pause</button></div>
+<svg class="earth-svg" id="earthSvg" viewBox="0 0 600 400" aria-hidden="true">
+ <defs><radialGradient id="sg3"><stop offset="0" stop-color="#fff7c2"/><stop offset="1" stop-color="#ff8a1c"/></radialGradient>
+ <clipPath id="eclip"><circle cx="0" cy="0" r="26"/></clipPath></defs>
+ <ellipse id="revPath" cx="300" cy="200" rx="200" ry="200" fill="none" stroke="#3a4683" stroke-width="2" stroke-dasharray="4 6" transform="translate(0,0)"/>
+ <circle cx="300" cy="200" r="46" fill="url(#sg3)"/>
+ <text x="300" y="206" text-anchor="middle" font-family="Fredoka" font-size="15" fill="#7a3a00" font-weight="700">Soleil</text>
+ <g class="orbit-g"><g transform="translate(500 200)">
+  <g class="self-g"><circle r="26" fill="#2f7fe0"/><path d="M-14 -12 q8 -6 14 2 q-2 8 -10 8 z M4 6 q8 -2 10 8 q-6 6 -12 -2 z" fill="#3ddc97"/><circle cx="0" cy="-26" r="4" fill="#ffb84d"/></g>
+  <path d="M0 -26 A26 26 0 0 1 0 26 Z" fill="#000" opacity=".45"/>
+ </g></g>
+</svg>
+<div class="compare">
+ <div id="cRot"><h4>🔁 Rotation</h4>La Terre tourne <b>sur elle-même</b> en <b>23 h 56 min</b> : c'est une <b>journée</b>. Elle crée le jour (côté éclairé) et la nuit (côté à l'ombre).</div>
+ <div id="cRev"><h4>☀️ Révolution</h4>La Terre tourne <b>autour du Soleil</b> en <b>365,25 jours</b> : c'est une <b>année</b>.</div>
+</div>
+<div class="tip">🤓 Les 0,25 jour en plus chaque année font un jour entier tous les 4 ans : c'est le 29 février des années bissextiles !</div>`,
+init(el){const svg=$('#earthSvg',el),og=$('.orbit-g',svg),sg=$('.self-g',svg);
+ const set=m=>{$('#cRot',el).classList.toggle('on',m==='rot');$('#cRev',el).classList.toggle('on',m==='rev');$('#mRot',el).classList.toggle('on',m==='rot');$('#mRev',el).classList.toggle('on',m==='rev');
+  og.style.animationDuration=m==='rot'?'60s':'8s';sg.style.animationDuration=m==='rev'?'6s':'1.6s'};
+ $('#mRot',el).onclick=()=>set('rot');$('#mRev',el).onclick=()=>set('rev');
+ $('#mPause',el).onclick=e=>{svg.classList.toggle('paused');e.target.textContent=svg.classList.contains('paused')?'▶ Reprendre':'⏸ Pause'}}},
+
+{h:`<h3>🥚 À l'intérieur de la Terre</h3>
+<p class="say">Personne n'a jamais creusé jusqu'au centre de la Terre ! Ce sont les ondes sismiques, produites par les séismes, qui nous permettent de connaître sa structure. Touche chaque couche.</p>
+<svg class="cut-svg" viewBox="0 0 300 300" aria-label="Coupe de la Terre">
+ <circle class="layer" data-l="0" cx="150" cy="150" r="140" fill="#7a5a3a"/>
+ <circle class="layer" data-l="1" cx="150" cy="150" r="130" fill="#e0613f"/>
+ <circle class="layer" data-l="2" cx="150" cy="150" r="62" fill="#ffc94d"/>
+ <circle cx="150" cy="150" r="26" fill="#fff1b8" pointer-events="none" opacity=".6"/>
+ <text class="label-txt" x="150" y="20" text-anchor="middle" pointer-events="none">croûte</text>
+ <text class="label-txt" x="150" y="62" text-anchor="middle" pointer-events="none">manteau</text>
+ <text class="label-txt" x="150" y="155" text-anchor="middle" pointer-events="none">noyau</text>
+</svg>
+<div class="card pinfo" id="lInfo"><p class="muted" style="margin:0">👆 Touche une couche.</p></div>
+<div class="tip">🍑 Pense à une pêche : la peau fine = la croûte, la chair = le manteau, le noyau = … le noyau !</div>`,
+init(el){const D=[["🟫 La croûte","La couche la plus externe et la plus fine, sur laquelle nous vivons. Elle est faite de roches solides."],["🟥 Le manteau","Une couche très épaisse de roches très chaudes, sous la croûte."],["🟨 Le noyau","Au centre de la Terre. C'est la partie la plus chaude, faite surtout de fer."]];
+ $$('.layer',el).forEach(c=>c.addEventListener('click',()=>{const l=+c.dataset.l;$$('.layer',el).forEach(x=>x.classList.toggle('sel',x===c));$('#lInfo',el).innerHTML=`<h4 class="fred" style="margin:0;font-size:20px">${D[l][0]}</h4><p style="margin:6px 0 0">${D[l][1]}</p>`;beep(true)}))}},
+
+{h:`<div class="retenir">
+ <h3>📌 À apprendre</h3>
+ <p style="margin:0 0 6px">La Terre tourne <b>autour du Soleil</b> en <b>365,25 jours</b>, soit une année : elle effectue une <b>révolution</b>.</p>
+ <p style="margin:0 0 6px">Elle tourne <b>sur elle-même</b> en <b>23 h 56 min</b>, soit une journée : elle effectue une <b>rotation</b>.</p>
+ <p style="margin:0 0 6px">La Terre est formée de couches : de l'extérieur vers le centre, la <b>croûte</b>, le <b>manteau</b> et le <b>noyau</b>.</p>
+ <p style="margin:0">Les <b>ondes sismiques</b> permettent de connaître la structure de la Terre.</p>
+</div>`}
+]},
+
+/* ---------- MISSION 3 ---------- */
+{title:"Séismes et volcans, témoins de l'activité interne",emo:"🌋",steps:[
+{h:`<h3>💥 Comment se produit un séisme ?</h3>
+<div class="probleme">Problème : comment les phénomènes géologiques témoignent-ils de l'activité interne de la Terre ?</div>
+<p class="say">Avance étape par étape avec les boutons.</p>
+<div class="steps-ctrl" id="sqBtns"></div>
+<svg class="seism-svg" id="sqSvg" viewBox="0 0 640 330" aria-hidden="true">
+ <rect x="0" y="0" width="640" height="110" fill="#152a52"/>
+ <path d="M0 110 L640 110 L640 330 L0 330Z" fill="#8a6a45"/>
+ <path d="M0 110 L640 110 L640 124 L0 124Z" fill="#4caf6a"/>
+ ${Array.from({length:6},(_,k)=>`<line x1="0" y1="${150+k*30}" x2="640" y2="${150+k*30}" stroke="#7a5c3a" stroke-width="2"/>`).join('')}
+ <g class="houses">
+  <g transform="translate(250 82)"><rect width="26" height="28" fill="#f2e6d0"/><path d="M-4 0 L13 -14 L30 0Z" fill="#d9534f"/></g>
+  <g transform="translate(330 86)"><rect width="22" height="24" fill="#f2e6d0"/><path d="M-4 0 L11 -12 L26 0Z" fill="#d9534f"/></g>
+  <g transform="translate(420 80)"><rect width="30" height="30" fill="#f2e6d0"/><path d="M-4 0 L15 -16 L34 0Z" fill="#d9534f"/></g>
+ </g>
+ <g class="stress"><path d="M180 250 l40 -10 M180 270 l40 -10" stroke="#ffd166" stroke-width="4" marker-end="url(#ar)"/><path d="M460 230 l-40 10 M460 250 l-40 10" stroke="#ffd166" stroke-width="4" marker-end="url(#ar)"/>
+  <text x="320" y="315" text-anchor="middle" class="label-txt">les roches se déforment et accumulent de l'énergie</text></g>
+ <defs><marker id="ar" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="10" refY="7" orient="auto"><path d="M0 0 L14 7 L0 14Z" fill="#ffd166"/></marker></defs>
+ <path class="crack" d="M300 124 L312 160 L304 200 L318 240 L310 290" fill="none" stroke="#1b1b1b" stroke-width="5"/>
+ <circle class="wave" cx="316" cy="250" r="4"/><circle class="wave w2" cx="316" cy="250" r="4"/><circle class="wave w3" cx="316" cy="250" r="4"/>
+ <g class="foyer"><path d="M316 236 l4 9 10 1 -8 6 3 10 -9 -6 -9 6 3 -10 -8 -6 10 -1z" fill="#ff4d4d" stroke="#fff" stroke-width="1.5"/></g>
+ <text class="label-txt lbl-foyer" x="340" y="262">FOYER</text>
+ <line class="vline" x1="316" y1="236" x2="316" y2="118" stroke="#fff" stroke-dasharray="5 5" stroke-width="2"/>
+ <g class="epi"><circle cx="316" cy="114" r="9" fill="#ffb84d" stroke="#fff" stroke-width="2"/></g>
+ <text class="label-txt lbl-epi" x="332" y="102">ÉPICENTRE</text>
+</svg>
+<div class="seism-txt" id="sqTxt"></div>
+<div class="tip">🪵 Comme un bâton de bois que tu plies : il résiste, résiste… puis <b>casse d'un coup</b> en faisant vibrer tes mains !</div>`,
+init(el){const T=["Touche ① pour commencer.","① Sous terre, les roches subissent des forces : elles se déforment et accumulent de l'énergie.","② À un moment, elles cassent ! Le lieu de rupture, en profondeur, s'appelle le FOYER.","③ L'énergie est libérée sous forme d'ondes sismiques qui se propagent dans toutes les directions : le sol tremble.","④ Le point de la surface situé juste au-dessus du foyer est l'ÉPICENTRE : c'est là que la secousse est la plus forte."];
+ const svg=$('#sqSvg',el),bx=$('#sqBtns',el);bx.innerHTML=[1,2,3,4].map(n=>`<button class="btn small" data-n="${n}">${'①②③④'[n-1]}</button>`).join('');
+ const go=n=>{svg.setAttribute('class','seism-svg s'+n);$('#sqTxt',el).textContent=T[n];$$('button',bx).forEach(b=>b.classList.toggle('on',+b.dataset.n===n))};
+ $$('button',bx).forEach(b=>b.onclick=()=>go(+b.dataset.n));go(0)}},
+
+{h:`<h3>🌊 Les conséquences</h3>
+<p class="say">Les séismes sont des tremblements de terre qui peuvent modifier le paysage en quelques secondes : failles, glissements de terrain, éboulements. Les plus violents ont des conséquences matérielles et humaines graves.</p>
+<div class="flip-grid">
+ <div class="flip"><div class="flip-in"><div class="flip-f"><span class="e">🏚️</span><b>Dégâts</b></div><div class="flip-b">Bâtiments fissurés ou effondrés, routes coupées, victimes pour les séismes les plus forts.</div></div></div>
+ <div class="flip"><div class="flip-in"><div class="flip-f"><span class="e">⛰️</span><b>Paysage modifié</b></div><div class="flip-b">Le sol se fend (rupture de surface), des pentes glissent, des rochers tombent.</div></div></div>
+ <div class="flip"><div class="flip-in"><div class="flip-f"><span class="e">🌊</span><b>Tsunami</b></div><div class="flip-b">Un fort séisme dans l'océan crée une onde très rapide (<b>700 km/h</b>). Freinée brutalement près de la côte, elle se transforme en <b>vague gigantesque</b>.</div></div></div>
+</div>`,
+init(el){$$('.flip',el).forEach(f=>f.onclick=()=>f.classList.toggle('on'))}},
+
+{h:`<h3>📊 Mesurer un séisme : deux échelles</h3>
+<div class="tscroll"><table class="t">
+<tr><th>Échelle</th><th>RICHTER</th><th>MSK</th></tr>
+<tr><td>Ce qu'elle mesure</td><td><b>Magnitude</b><br>(puissance, énergie libérée)</td><td><b>Intensité</b><br>(effets observés)</td></tr>
+<tr><td>Valeurs</td><td>de 1 à 9, voire plus</td><td>de I à XII</td></tr>
+<tr><td>Mesurée grâce à</td><td>un <b>sismographe</b></td><td>la <b>population</b> (ce qu'elle ressent, les dégâts)</td></tr>
+</table></div>
+<p class="say"><b>Joue avec l'échelle MSK</b> : fais glisser le curseur.</p>
+<div class="msk"><input type="range" min="1" max="12" value="1" id="mskR" aria-label="Intensité MSK"><div class="msk-out"><div class="deg" id="mskD">I</div><div><b id="mskT"></b><div class="muted" id="mskE" style="font-size:14px"></div></div></div></div>`,
+init(el){const R=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+ const T=[["Secousse imperceptible","Seuls les sismographes l'enregistrent."],["À peine perceptible","Quelques personnes au repos la sentent."],["Secousse faible","Les objets suspendus se balancent."],["Secousse ressentie","Ressentie par beaucoup de gens, la vaisselle tinte."],["Réveil des dormeurs","Les gens endormis se réveillent, des objets tombent."],["Frayeur","Les gens ont peur et sortent dehors."],["Dommages aux constructions","Des murs se fissurent."],["Destruction de bâtiments","Certains bâtiments s'effondrent."],["Destructions généralisées","Beaucoup de constructions sont détruites."],["Destruction générale des bâtiments","La plupart des bâtiments sont détruits."],["Catastrophe","Routes, ponts et réseaux détruits."],["Changement du paysage","Le relief lui-même est modifié."]];
+ const r=$('#mskR',el);const up=()=>{const v=+r.value-1;$('#mskD',el).textContent=R[v];$('#mskT',el).textContent=T[v][0];$('#mskE',el).textContent=T[v][1];$('#mskD',el).style.color=v<4?'#3ddc97':v<7?'#ffb84d':'#ff6b85'};r.addEventListener('input',up);up()}},
+
+{h:`<h3>🛡️ Se protéger</h3>
+<p class="say">Un séisme est dangereux quand sa magnitude est forte, que son foyer est proche de la surface et que l'épicentre est dans une zone peuplée.</p>
+<div class="tip">Dans les zones très sismiques (en France : les Alpes, les Pyrénées, les Antilles), on construit des bâtiments <b>parasismiques</b>, on interdit les usines dangereuses comme les centrales nucléaires, et on apprend à la population les <b>gestes qui sauvent</b>.</div>
+<p><b>🎮 Bon ou mauvais réflexe ?</b> Touche un geste, puis la bonne case.</p>
+<div id="reflexGame"></div>`,
+init(el){sortGame($('#reflexGame',el),{bins:['✅ Bon réflexe','❌ Mauvais réflexe'],items:shuffle([["Se mettre sous une table solide",0],["S'éloigner des bâtiments si on est dehors",0],["Se protéger la tête",0],["Prendre l'ascenseur",1],["Téléphoner pendant la secousse",1],["Rester près des fenêtres",1]]),onEnd:()=>{}})}},
+
+{h:`<h3>🌋 Le volcanisme</h3>
+<p class="say">En surface, les volcans en éruption sont eux aussi des témoins de l'activité interne de la Terre. Le magma, de la roche fondue, monte depuis la chambre magmatique. Touche une étiquette, puis l'endroit du schéma qui correspond.</p>
+<div id="volcLabel"></div>`,
+init(el){labelGame($('#volcLabel',el),volcanoLabelSpec(),()=>{})}},
+
+{h:`<h3>💨 Deux types d'éruptions</h3>
+<div class="mode-btns"><button class="btn small" id="vEff">🔥 Effusive</button><button class="btn small" id="vExp">💥 Explosive</button></div>
+<svg class="volc-svg" id="volcSvg" viewBox="0 0 560 330" aria-hidden="true">
+ <rect width="560" height="330" fill="#152a52"/>
+ <g class="plume"><circle class="puff" cx="280" cy="80" r="40" fill="#8a8fa8"/><circle class="puff p2" cx="250" cy="60" r="34" fill="#a3a7bd"/><circle class="puff p3" cx="312" cy="56" r="38" fill="#7b8098"/></g>
+ <path d="M60 300 L240 120 L320 120 L500 300Z" fill="#5b4636"/>
+ <path d="M240 120 L320 120 L310 132 L250 132Z" fill="#2d2119"/>
+ <g class="lava"><path class="flow" d="M265 126 C 240 170 220 210 170 290" fill="none" stroke="#ff7b1c" stroke-width="12" stroke-linecap="round"/><path class="flow" d="M295 126 C 320 180 350 230 400 292" fill="none" stroke="#ffb03b" stroke-width="10" stroke-linecap="round"/><circle cx="280" cy="112" r="16" fill="#ff7b1c"/></g>
+ <g class="nuee"><ellipse cx="330" cy="170" rx="50" ry="22" fill="#9b9fb5" opacity=".85"/></g>
+ <rect x="0" y="300" width="560" height="30" fill="#3a2c22"/>
+</svg>
+<div class="compare">
+ <div id="dEff"><h4>🔥 Éruption effusive</h4>Une <b>lave fluide</b> s'écoule en longues coulées. En s'accumulant, elle construit le volcan, qui peut former une île entière.<br><span class="tag">La Réunion</span> <span class="tag">Hawaï (Kilauea)</span></div>
+ <div id="dExp"><h4>💥 Éruption explosive</h4>Une <b>lave visqueuse</b> bouche le volcan. La pression fait exploser le sommet : cendres et <b>nuées ardentes</b> destructrices.<br><span class="tag">Vésuve – Pompéi</span></div>
+</div>
+<h3 style="margin-top:16px">🆚 Le Vésuve et le Kilauea</h3>
+<p class="muted" style="margin:0">Touche les cases « ? » pour vérifier tes réponses.</p>
+<div class="tscroll"><table class="t">
+<tr><th>Caractéristiques</th><th>Vésuve (Italie)</th><th>Kilauea (Hawaï)</th></tr>
+<tr><td>Altitude</td><td>1 281 m</td><td>1 247 m</td></tr>
+<tr><td>Type de magma</td><td class="reveal hid">visqueux</td><td class="reveal hid">fluide</td></tr>
+<tr><td>Matériaux émis</td><td class="reveal hid">cendres, bombes, nuées ardentes</td><td class="reveal hid">coulées de lave</td></tr>
+<tr><td>Type de volcan</td><td class="reveal hid">explosif</td><td class="reveal hid">effusif</td></tr>
+</table></div>`,
+init(el){const svg=$('#volcSvg',el);const set=m=>{svg.setAttribute('class','volc-svg '+m);$('#dEff',el).classList.toggle('on',m==='eff');$('#dExp',el).classList.toggle('on',m==='exp');$('#vEff',el).classList.toggle('on',m==='eff');$('#vExp',el).classList.toggle('on',m==='exp')};
+ $('#vEff',el).onclick=()=>set('eff');$('#vExp',el).onclick=()=>set('exp');set('eff');$$('.reveal',el).forEach(c=>c.onclick=()=>c.classList.remove('hid'))}},
+
+{h:`<div class="retenir">
+ <h3>📌 À apprendre : les séismes</h3>
+ <p style="margin:0 0 6px">Sous terre, les roches se déforment et accumulent de l'énergie. À un moment donné, elles <b>cassent</b> en libérant cette énergie sous forme d'<b>ondes sismiques</b>.</p>
+ <p style="margin:0 0 6px">Les séismes sont des tremblements de terre qui modifient le paysage en quelques secondes, avec des conséquences matérielles et humaines pour les plus violents.</p>
+ <p style="margin:0 0 6px">Un fort séisme dans l'océan peut créer une onde très rapide (700 km/h) qui devient une vague gigantesque sur le littoral : un <b>tsunami</b>.</p>
+ <dl><dt>Foyer</dt><dd>Lieu de rupture des roches en profondeur.</dd><dt>Épicentre</dt><dd>Point de la surface situé au-dessus du foyer.</dd></dl>
+</div>
+<div class="retenir">
+ <h3>📌 À apprendre : les volcans</h3>
+ <p style="margin:0 0 6px">En surface, les volcans en éruption sont les témoins de l'activité interne de la Terre. Il existe deux types de volcanisme :</p>
+ <p style="margin:0 0 4px">• les éruptions <b>effusives</b> (La Réunion, Hawaï) rejettent une lave fluide dont l'accumulation forme le volcan ;</p>
+ <p style="margin:0 0 6px">• les éruptions <b>explosives</b> (Vésuve – Pompéi) pulvérisent le sommet et déclenchent des nuées ardentes. La lave visqueuse reconstruit le volcan.</p>
+ <dl><dt>Lave fluide</dt><dd>Lave qui s'écoule rapidement.</dd><dt>Lave visqueuse</dt><dd>Lave qui s'écoule lentement.</dd></dl>
+</div>`}
+]},
+
+/* ---------- MISSION 4 ---------- */
+{title:"La différence entre météo et climat",emo:"⛅",steps:[
+{h:`<h3>☔ Météo ou climat ?</h3>
+<div class="probleme">Problème : quels météo et climat avons-nous à Beauvais ?</div>
+<p class="say">On confond souvent les deux mots. Pourtant, ils ne veulent pas dire la même chose !</p>
+<div class="meteo-vs">
+ <div><div class="e">🌦️</div><h4 class="fred" style="margin:4px 0">La météo</h4>Le temps qu'il fait <b>ici</b>, <b>aujourd'hui</b> et les jours suivants.<br><span class="muted">« Demain, il pleuvra à Lille. »</span></div>
+ <div><div class="e">🗺️</div><h4 class="fred" style="margin:4px 0">Le climat</h4>Le temps qu'il fait <b>en moyenne</b>, sur <b>plusieurs années</b> et une <b>grande zone</b>.<br><span class="muted">« Le sud de la France a des étés chauds et secs. »</span></div>
+</div>
+<div class="tip">🧑 La météo, c'est ton <b>humeur du jour</b> (elle change vite). Le climat, c'est ton <b>caractère</b> (il reste le même sur des années).</div>
+<p><b>La température, l'ensoleillement et la pluie</b> changent selon les heures, les jours, les mois et les années.</p>`},
+
+{h:`<h3>🏙️ Beauvais contre Nice</h3>
+<p class="say">Voici les caractéristiques du climat de deux villes, calculées sur les 30 dernières années.</p>
+<div class="bars" id="climBars"></div>
+<div class="compare">
+ <div><h4>🌧️ Beauvais : climat océanique dégradé</h4>Températures intermédiaires (11,6 °C en moyenne). Pluies faibles, mais régulières.<br><b>Ni chaud ni froid, il pleut un peu, souvent.</b></div>
+ <div><h4>☀️ Nice : climat méditerranéen</h4>Plus chaud (16,3 °C) et beaucoup plus ensoleillé. Presque autant de pluie, mais elle tombe en moins de jours, avec des étés secs.</div>
+</div>`,
+init(el){const D=[["Précipitations annuelles",'mm',[750,760],800,'#5cc8ff'],["Température moyenne",'°C',[11.6,16.3],20,'#ff8fd0'],["Ensoleillement annuel",'h',[1750,2850],3000,'#ffb84d']];
+ $('#climBars',el).innerHTML=D.map(d=>`<div class="bar-row"><div class="lab">${d[0]}</div>${['Beauvais','Nice'].map((v,i)=>`<div class="bar"><span class="nm">${v}</span><span class="tr"><i data-w="${d[2][i]/d[3]*100}" style="background:${d[4]};opacity:${i?1:.7}"></i></span><span class="v">${String(d[2][i]).replace('.',',')} ${d[1]}</span></div>`).join('')}</div>`).join('');
+ setTimeout(()=>$$('#climBars i',el).forEach(i=>i.style.width=i.dataset.w+'%'),100)}},
+
+{h:`<h3>☀️ Pourquoi des climats différents ?</h3>
+<p class="say">Le Soleil n'éclaire pas toute la Terre de la même façon. Près de l'équateur, ses rayons arrivent droits et chauffent une petite surface : il fait chaud. Près des pôles, ils arrivent en biais et s'étalent sur une grande surface : il fait froid.</p>
+<svg class="rays-svg" viewBox="0 0 520 320" aria-hidden="true">
+ <circle cx="340" cy="160" r="130" fill="#2f7fe0"/>
+ <path d="M250 64 A130 130 0 0 1 310 33" stroke="#5cc8ff" stroke-width="10" fill="none"/>
+ <path d="M210 145 a130 130 0 0 1 0 30" stroke="#ff4d4d" stroke-width="10" fill="none"/>
+ <line x1="210" y1="160" x2="470" y2="160" stroke="#fff" stroke-dasharray="4 5" opacity=".6"/><text x="400" y="152" class="label-txt" style="font-size:13px">équateur</text>
+ ${[145,160,175].map(y=>`<line x1="10" y1="${y}" x2="206" y2="${y}" stroke="#ffd23f" stroke-width="5" marker-end="url(#ar2)"/>`).join('')}
+ ${[[34,308],[49,272],[64,252]].map(([y,x])=>`<line x1="10" y1="${y}" x2="${x-4}" y2="${y}" stroke="#ffd23f" stroke-width="5" marker-end="url(#ar2)"/>`).join('')}
+ <defs><marker id="ar2" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto"><path d="M0 0 L14 7 L0 14Z" fill="#ffd23f"/></marker></defs>
+ <text x="150" y="210" class="label-txt" style="fill:#ff8a8a">rayons droits → chaud</text>
+ <text x="150" y="105" class="label-txt" style="fill:#9fdcff">rayons en biais → froid</text>
+</svg>
+<div class="retenir" style="margin-top:6px"><p style="margin:0">L'activité externe de la Terre (vents, nuages, pluies, climats) est causée par l'<b>inégale répartition de l'énergie solaire</b> à la surface de la Terre.</p></div>`},
+
+{h:`<h3>🌡️ Le changement climatique</h3>
+<p class="say">Quand la température moyenne de la Terre change, même un peu, tout le climat se dérègle : c'est le changement climatique.</p>
+<div class="facts">
+ <button class="fact hidden"><b>+1 °C</b><span>Ça paraît peu, mais en moyenne sur toute la planète, c'est énorme.</span></button>
+ <button class="fact hidden"><b>🧊 Glaciers</b><span>Les glaces fondent et le niveau des mers monte.</span></button>
+ <button class="fact hidden"><b>🌪️ Extrêmes</b><span>Canicules, sécheresses et fortes pluies deviennent plus fréquentes.</span></button>
+</div>
+<div class="tip">❓ Ce changement influence-t-il aussi la vie sur Terre ? C'est la question que posera la suite du programme !</div>`,
+init(el){$$('.fact',el).forEach(f=>f.onclick=()=>{if(f.classList.contains('hidden')){f.classList.remove('hidden');beep(true)}})}},
+
+{h:`<div class="retenir">
+ <h3>📌 À apprendre</h3>
+ <p style="margin:0 0 6px">La température, l'ensoleillement et la pluviométrie changent selon les heures, les jours, les mois et les années.</p>
+ <p style="margin:0 0 6px">Le temps qu'il fait en ce moment et les prévisions pour les jours à venir sont étudiés en <b>météorologie</b>. Le temps qu'il fait en moyenne sur une ou plusieurs années dans de grandes zones est étudié en <b>climatologie</b>.</p>
+ <dl>
+  <dt>Météo</dt><dd>Le temps qu'il fait localement et sur une courte durée.</dd>
+  <dt>Climat</dt><dd>Des valeurs moyennes sur de grandes zones et de longues périodes.</dd>
+ </dl>
+ <p style="margin:6px 0 6px">L'activité externe de la Terre est causée par l'<b>inégale répartition de l'énergie solaire</b> à sa surface.</p>
+ <p style="margin:0">La moindre variation de la température moyenne sur Terre déséquilibre le climat : c'est le <b>changement climatique</b>.</p>
+</div>`}
+]}
+];
+
+/* ---------- Accueil cours ---------- */
+function renderHome(){
+  $('#chapGrid').innerHTML=CHAPTERS.map((c,i)=>`<button class="chap" data-i="${i}">${S.done['c'+i]?'<span class="done">✓ Terminé</span>':''}<span class="num">MISSION ${i+1}</span><span class="emo">${c.emo}</span><h3>${c.title}</h3><span class="muted" style="font-size:14px">${c.steps.length} étapes + défi</span></button>`).join('');
+  $$('.chap').forEach(b=>b.onclick=()=>openLesson(+b.dataset.i));
+  $('#badges').innerHTML=BADGES.map((b,i)=>`<div class="badge ${S.done['c'+i]?'got':''}"><span class="b">${b.e}</span>${b.n}</div>`).join('');
+}
+let cur={c:0,s:0};
+function openLesson(c){cur={c,s:0};$('#coursHome').style.display='none';$('#lesson').style.display='block';renderStep()}
+function closeLesson(){stopSpeak();$('#lesson').style.display='none';$('#coursHome').style.display='block';renderHome();window.scrollTo({top:0})}
+function renderStep(){
+  stopSpeak();const ch=CHAPTERS[cur.c];const total=ch.steps.length+1;const isQuiz=cur.s>=ch.steps.length;
+  const L=$('#lesson');
+  L.innerHTML=`<div class="lesson-head"><button class="btn small ghost" id="lBack" aria-label="Retour">← Missions</button><h2>${ch.emo} ${ch.title}</h2>${isQuiz?'':'<button class="btn small say-btn" id="lSay" aria-label="Écouter">🔊</button>'}</div>
+  <div class="prog"><i style="width:${(cur.s+1)/total*100}%"></i></div><div class="muted" style="font-size:13px;font-weight:700">Étape ${cur.s+1} / ${total}</div>
+  <div class="card step" id="stepBody"></div>
+  ${isQuiz?'':`<div class="lesson-foot"><button class="btn" id="lPrev" ${cur.s===0?'disabled style="opacity:.4"':''}>← Précédent</button><button class="btn main" id="lNext">${cur.s===ch.steps.length-1?'Défi final 🏆':'Suivant →'}</button></div>`}`;
+  $('#lBack').onclick=closeLesson;
+  const body=$('#stepBody');
+  if(isQuiz){
+    body.innerHTML=`<h3>🏆 Défi de la mission</h3><p class="muted" style="margin-top:0">4 questions pour valider la mission et gagner ton badge.</p><div id="qz"></div>`;
+    const pool=shuffle(QCM.filter(q=>q.ch===cur.c)).slice(0,4);
+    quizGame($('#qz'),pool,(score,n)=>{
+      const first=!S.done['c'+cur.c];
+      if(score>=3){if(first){S.done['c'+cur.c]=1;save();addXP(50);confetti()}
+        $('#qz').innerHTML=`<div class="score-box"><div style="font-size:60px">${BADGES[cur.c].e}</div><div class="big">${score}/${n}</div><h3>Mission accomplie !</h3><p>${first?'Badge <b>'+BADGES[cur.c].n+'</b> débloqué ! +50 XP':'Tu as déjà ce badge, bravo de réviser !'}</p><div class="row" style="justify-content:center">${cur.c<3?`<button class="btn main" id="nxtM">Mission suivante →</button>`:`<button class="btn main" id="goEx">🎯 Aller s'entraîner</button>`}<button class="btn" id="bkM">Retour aux missions</button></div></div>`;
+        $('#bkM').onclick=closeLesson;if($('#nxtM'))$('#nxtM').onclick=()=>openLesson(cur.c+1);if($('#goEx'))$('#goEx').onclick=()=>$('.nav button[data-v="ex"]').click();
+      }else{$('#qz').innerHTML=`<div class="score-box"><div class="big">${score}/${n}</div><h3>Presque !</h3><p>Il faut au moins 3 bonnes réponses. Relis la leçon et retente ta chance.</p><div class="row" style="justify-content:center"><button class="btn main" id="rtM">🔁 Réessayer</button><button class="btn" id="rlM">📖 Relire la mission</button></div></div>`;
+        $('#rtM').onclick=renderStep;$('#rlM').onclick=()=>{cur.s=0;renderStep()}}
+    });
+  }else{
+    const st=ch.steps[cur.s];body.innerHTML=st.h;if(st.init)st.init(body);
+    $('#lPrev').onclick=()=>{if(cur.s>0){cur.s--;renderStep();window.scrollTo({top:0})}};
+    $('#lNext').onclick=()=>{cur.s++;renderStep();window.scrollTo({top:0})};
+    $('#lSay').onclick=e=>{const parts=$$('h3,.say,.probleme,.retenir,.tip,.compare,.meteo-vs',body).map(x=>x.innerText);speak(parts.join('. ').replace(/[📌🔭☀️🪐☄️📏🌡️👯🌋🤔🔄🥚💥🌊📊🛡️💨🆚☔🏙️💡🪵🍑🤓🧑🔎❓]/gu,''),e.currentTarget)};
+  }
+}
+
+/* ============ MOTEURS D'EXERCICES ============ */
+function quizGame(box,qs,onEnd,tf=false){
+  let i=0,score=0;
+  const show=()=>{
+    if(i>=qs.length){onEnd(score,qs.length);return}
+    const q=qs[i];
+    if(tf){
+      box.innerHTML=`<div class="qcount"><span>Question ${i+1} / ${qs.length}</span><span>✅ ${score}</span></div><div class="q-title">${q[0]}</div>
+      <div class="opts two"><button class="opt" data-v="1"><span class="l">✔</span>Vrai</button><button class="opt" data-v="0"><span class="l">✘</span>Faux</button></div><div class="explain"></div>`;
+      $$('.opt',box).forEach(b=>b.onclick=()=>{const ok=(b.dataset.v==='1')===q[1];if(ok)score++;beep(ok);
+        $$('.opt',box).forEach(x=>{x.disabled=true;if((x.dataset.v==='1')===q[1])x.classList.add('good')});if(!ok)b.classList.add('bad');
+        next((ok?'✅ Exact ! ':'❌ Raté. ')+q[2])});
+    }else{
+      const opts=shuffle(q.o.map((t,k)=>({t,ok:k===0})));
+      box.innerHTML=`<div class="qcount"><span>Question ${i+1} / ${qs.length}</span><span>✅ ${score}</span></div><div class="q-title">${q.q}</div>
+      <div class="opts two">${opts.map((o,k)=>`<button class="opt" data-k="${k}"><span class="l">${'ABCD'[k]}</span>${o.t}</button>`).join('')}</div><div class="explain"></div>`;
+      $$('.opt',box).forEach(b=>b.onclick=()=>{const o=opts[+b.dataset.k];if(o.ok)score++;beep(o.ok);
+        $$('.opt',box).forEach(x=>{x.disabled=true;if(opts[+x.dataset.k].ok)x.classList.add('good')});if(!o.ok)b.classList.add('bad');
+        next((o.ok?'✅ Bravo ! ':'❌ Raté. ')+q.e)});
+    }
+  };
+  const next=msg=>{const ex=$('.explain',box);ex.innerHTML=`<p style="margin:0 0 10px">${msg}</p><button class="btn main" id="qNext">${i===qs.length-1?'Voir mon score':'Question suivante →'}</button>`;ex.classList.add('on');$('#qNext').onclick=()=>{i++;show()};ex.scrollIntoView({behavior:'smooth',block:'nearest'})};
+  show();
+}
+
+function sortGame(box,{bins,items,onEnd}){
+  let sel=null,score=0,left=items.length,tried=new Set();
+  box.innerHTML=`<div class="pool" id="sgPool">${items.map((it,k)=>`<button class="chip" data-k="${k}">${it[0]}</button>`).join('')}</div>
+  <div class="bins">${bins.map((b,k)=>`<div class="bin" data-b="${k}"><h4>${b}</h4></div>`).join('')}</div><div class="fb" id="sgFb"></div>`;
+  const chips=$$('.chip',box),binEls=$$('.bin',box);
+  chips.forEach(c=>c.onclick=()=>{if(c.classList.contains('good'))return;chips.forEach(x=>x.classList.remove('sel'));sel=c;c.classList.add('sel');binEls.forEach(b=>b.classList.add('ready'))});
+  binEls.forEach(b=>b.onclick=e=>{if(!sel||e.target.closest('.chip.good'))return;const k=+sel.dataset.k;const ok=items[k][1]===+b.dataset.b;beep(ok);
+    if(ok){if(!tried.has(k))score++;sel.classList.remove('sel');sel.classList.add('good');b.appendChild(sel);sel=null;binEls.forEach(x=>x.classList.remove('ready'));left--;
+      if(left===0){const fb=$('#sgFb',box);fb.className='fb ok';fb.textContent=`🎉 Terminé ! ${score} / ${items.length} du premier coup.`;onEnd&&onEnd(score,items.length)}}
+    else{tried.add(k);const s=sel;s.classList.remove('bad');void s.offsetWidth;s.classList.add('bad')}});
+}
+
+function orderGame(box,{items,intro,onEnd}){
+  const order=shuffle(items.map((t,k)=>({t,k})));let next=0,errors=0;
+  box.innerHTML=`<p class="muted" style="margin:0">${intro}</p><div class="order-line" id="ogLine"><span class="sunb">☀️</span></div><div class="pool">${order.map(o=>`<button class="chip" data-k="${o.k}">${o.t}</button>`).join('')}</div><div class="fb" id="ogFb"></div>`;
+  $$('.pool .chip',box).forEach(c=>c.onclick=()=>{const k=+c.dataset.k;
+    if(k===next){beep(true);c.classList.add('good');$('#ogLine',box).appendChild(c);c.onclick=null;next++;
+      if(next===items.length){const sc=Math.max(0,items.length-errors);const fb=$('#ogFb',box);fb.className='fb ok';fb.textContent=`🎉 Bravo ! ${errors} erreur${errors>1?'s':''}.`;onEnd&&onEnd(sc,items.length)}}
+    else{errors++;beep(false);c.classList.remove('bad');void c.offsetWidth;c.classList.add('bad')}});
+}
+
+function labelGame(box,spec,onEnd){
+  let sel=null,done=0,errors=0;const labs=shuffle(spec.labels.map((t,k)=>({t,k})));
+  box.innerHTML=`<div class="pool">${labs.map(l=>`<button class="chip" data-k="${l.k}">${l.t}</button>`).join('')}</div>${spec.svg}<div class="fb" id="lgFb"></div>`;
+  const chips=$$('.pool .chip',box);
+  chips.forEach(c=>c.onclick=()=>{if(c.classList.contains('good'))return;chips.forEach(x=>x.classList.remove('sel'));sel=c;c.classList.add('sel')});
+  $$('.label-zone',box).forEach(z=>z.addEventListener('click',()=>{if(!sel){toast('Choisis d\'abord une étiquette');return}
+    const k=+sel.dataset.k,ok=k===+z.dataset.z;beep(ok);
+    if(ok){sel.classList.remove('sel');sel.classList.add('good');sel.disabled=true;const t=$(`.lz-t[data-z="${k}"]`,box);if(t){t.textContent=spec.labels[k];t.style.opacity=1}z.style.pointerEvents='none';z.setAttribute('fill-opacity','.9');sel=null;done++;
+      if(done===spec.labels.length){const fb=$('#lgFb',box);fb.className='fb ok';fb.textContent=`🎉 Schéma complet ! ${errors} erreur${errors>1?'s':''}.`;onEnd&&onEnd(Math.max(0,spec.labels.length-errors),spec.labels.length)}}
+    else{errors++;const s=sel;s.classList.remove('bad');void s.offsetWidth;s.classList.add('bad')}}));
+}
+function zoneMark(cx,cy,z,lx,ly,anchor='start'){return `<circle class="label-zone" data-z="${z}" cx="${cx}" cy="${cy}" r="18" fill="#ffb84d" fill-opacity=".35" stroke="#ffb84d" stroke-width="3"/><text class="label-txt lz-t" data-z="${z}" x="${lx}" y="${ly}" text-anchor="${anchor}" style="opacity:0;font-size:16px" pointer-events="none"></text>`}
+function volcanoLabelSpec(){return{labels:['Chambre magmatique','Cheminée','Cratère','Coulée de lave','Panache de cendres'],
+ svg:`<svg class="volc-svg" viewBox="0 0 560 380"><rect width="560" height="380" fill="#152a52" rx="14"/>
+ <circle cx="290" cy="56" r="30" fill="#8a8fa8"/><circle cx="262" cy="40" r="24" fill="#a3a7bd"/><circle cx="318" cy="36" r="26" fill="#7b8098"/>
+ <path d="M60 250 L240 110 L320 110 L500 250Z" fill="#5b4636"/><rect x="0" y="250" width="560" height="130" fill="#3a2c22"/>
+ <path d="M272 110 L288 110 L292 300 L268 300Z" fill="#ff7b1c"/><ellipse cx="280" cy="320" rx="90" ry="34" fill="#ff5a1c"/>
+ <path d="M300 116 C 330 160 360 200 420 248" fill="none" stroke="#ffb03b" stroke-width="10" stroke-linecap="round"/>
+ ${zoneMark(280,322,0,380,330)}${zoneMark(280,220,1,300,222)}${zoneMark(280,112,2,330,124)}${zoneMark(390,222,3,410,208)}${zoneMark(290,52,4,330,30)}</svg>`}}
+function earthLabelSpec(){return{labels:['Croûte','Manteau','Noyau'],
+ svg:`<svg class="cut-svg" viewBox="0 0 360 300"><circle cx="150" cy="150" r="140" fill="#7a5a3a"/><circle cx="150" cy="150" r="130" fill="#e0613f"/><circle cx="150" cy="150" r="62" fill="#ffc94d"/>
+ ${zoneMark(150,15,0,175,12)}${zoneMark(150,60,1,175,52)}${zoneMark(150,150,2,150,186,'middle')}</svg>`}}
+
+function matchGame(box,pairs,onEnd){
+  const L=shuffle(pairs.map((p,k)=>({t:p[0],k}))),R=shuffle(pairs.map((p,k)=>({t:p[1],k})));let sl=null,sr=null,done=0,errors=0;
+  box.innerHTML=`<p class="muted" style="margin:0 0 8px">Touche un mot, puis sa définition.</p><div class="match"><div class="col">${L.map(x=>`<button class="chip" data-s="l" data-k="${x.k}">${x.t}</button>`).join('')}</div><div class="col">${R.map(x=>`<button class="chip" data-s="r" data-k="${x.k}">${x.t}</button>`).join('')}</div></div><div class="fb" id="mgFb"></div>`;
+  const check=()=>{if(!sl||!sr)return;const ok=sl.dataset.k===sr.dataset.k;beep(ok);
+    if(ok){[sl,sr].forEach(c=>{c.classList.remove('sel');c.classList.add('locked');c.disabled=true});done++;
+      if(done===pairs.length){const fb=$('#mgFb',box);fb.className='fb ok';fb.textContent=`🎉 Tout est relié ! ${errors} erreur${errors>1?'s':''}.`;onEnd&&onEnd(Math.max(0,pairs.length-errors),pairs.length)}}
+    else{errors++;[sl,sr].forEach(c=>{c.classList.remove('sel','bad');void c.offsetWidth;c.classList.add('bad')})}
+    sl=sr=null};
+  $$('.chip',box).forEach(c=>c.onclick=()=>{if(c.dataset.s==='l'){if(sl)sl.classList.remove('sel');sl=c}else{if(sr)sr.classList.remove('sel');sr=c}c.classList.add('sel');check()});
+}
+
+function numberGame(box,qs,onEnd){
+  let i=0,score=0;
+  const show=()=>{if(i>=qs.length){onEnd(score,qs.length);return}const q=qs[i];
+    box.innerHTML=`<div class="qcount"><span>Calcul ${i+1} / ${qs.length}</span><span>✅ ${score}</span></div><div class="q-title">${q.q}</div><div class="tip" style="margin-top:0">${q.hint}</div>
+    <div class="row"><input class="inp" id="ngIn" inputmode="decimal" placeholder="? cm"><button class="btn main" id="ngOk">Vérifier</button></div><div class="explain"></div>`;
+    const go=()=>{const v=parseFloat(($('#ngIn',box).value||'').replace(',','.'));if(isNaN(v)){toast('Écris un nombre');return}
+      const ok=Math.abs(v-q.a)<=Math.max(.3,q.a*.04);if(ok)score++;beep(ok);$('#ngOk',box).disabled=true;$('#ngIn',box).disabled=true;
+      const ex=$('.explain',box);ex.innerHTML=`<p style="margin:0 0 10px">${ok?'✅ Bravo ! ':'❌ Pas tout à fait. '}${q.e}</p><button class="btn main" id="ngNext">${i===qs.length-1?'Voir mon score':'Suivant →'}</button>`;ex.classList.add('on');$('#ngNext').onclick=()=>{i++;show()}};
+    $('#ngOk',box).onclick=go;$('#ngIn',box).addEventListener('keydown',e=>{if(e.key==='Enter')go()})};
+  show();
+}
+
+/* ============ ATELIERS D'ENTRAÎNEMENT ============ */
+const fr=n=>String(Math.round(n*100)/100).replace('.',',');
+const EXOS=[
+ {id:'qcm',e:'❓',t:'Le grand QCM',d:'10 questions sur tout le chapitre',run:(b,end)=>quizGame(b,shuffle(QCM).slice(0,10),end)},
+ {id:'vf',e:'⚖️',t:'Vrai ou faux ?',d:'8 affirmations à juger',run:(b,end)=>quizGame(b,shuffle(TF).slice(0,8),end,true)},
+ {id:'tri',e:'🪐',t:'Rocheuse ou gazeuse ?',d:'Classe les 8 planètes',run:(b,end)=>sortGame(b,{bins:['🪨 Planètes rocheuses','💨 Planètes gazeuses'],items:shuffle(PLANETS.map(p=>[p.n,p.t==='r'?0:1])),onEnd:end})},
+ {id:'ordre',e:'☀️',t:'Dans l\'ordre !',d:'Range les planètes depuis le Soleil',run:(b,end)=>orderGame(b,{items:PLANETS.map(p=>p.n),intro:'Touche les planètes dans l\'ordre, de la plus proche à la plus éloignée du Soleil. (Me Voici Toute Mignonne…)',onEnd:end})},
+ {id:'coupe',e:'🥚',t:'Légende la Terre',d:'Place croûte, manteau, noyau',run:(b,end)=>{b.innerHTML='<p class="muted" style="margin:0">Touche une étiquette, puis le cercle orange qui correspond.</p><div></div>';labelGame(b.lastChild,earthLabelSpec(),end)}},
+ {id:'volc',e:'🌋',t:'Légende le volcan',d:'5 éléments à placer',run:(b,end)=>{b.innerHTML='<p class="muted" style="margin:0">Touche une étiquette, puis le cercle orange qui correspond.</p><div></div>';labelGame(b.lastChild,volcanoLabelSpec(),end)}},
+ {id:'defs',e:'🔗',t:'Mots et définitions',d:'Relie 6 mots à leur définition',run:(b,end)=>matchGame(b,shuffle(DEFS).slice(0,6),end)},
+ {id:'meteo',e:'⛅',t:'Météo ou climat ?',d:'Trie les phrases',run:(b,end)=>sortGame(b,{bins:['🌦️ Météo','🗺️ Climat'],items:shuffle([["Demain, orage sur Lyon",0],["Ce matin il gèle à Lille",0],["Cet après-midi, 25 °C à Bordeaux",0],["Vent fort prévu ce soir sur la côte",0],["En Bretagne, il pleut souvent toute l'année",1],["Le sud de la France a des étés chauds et secs",1],["Moyenne de 11,6 °C sur 30 ans",1],["Les pôles sont froids toute l'année",1]]),onEnd:end})},
+ {id:'erupt',e:'💨',t:'Effusive ou explosive ?',d:'Trie les indices',run:(b,end)=>sortGame(b,{bins:['🔥 Effusive','💥 Explosive'],items:shuffle([["Lave fluide",0],["Longues coulées de lave",0],["La Réunion",0],["Kilauea (Hawaï)",0],["Lave visqueuse",1],["Nuées ardentes",1],["Vésuve – Pompéi",1],["Le sommet est pulvérisé",1]]),onEnd:end})},
+ {id:'seis',e:'💥',t:'Séismes : Richter ou MSK ?',d:'À quelle échelle ça correspond ?',run:(b,end)=>sortGame(b,{bins:['📈 Richter','👥 MSK'],items:shuffle([["Magnitude",0],["Valeurs de 1 à 9",0],["Mesurée par un sismographe",0],["Énergie libérée",0],["Intensité",1],["Valeurs de I à XII",1],["Effets sur la population",1],["Dégâts observés",1]]),onEnd:end})},
+ {id:'calc',e:'📏',t:'Le système solaire à l\'échelle',d:'3 calculs : Terre = 3 cm',run:(b,end)=>{const P=shuffle([['Mars',228],['Jupiter',778],['Saturne',1430],['Uranus',2870],['Mercure',58],['Vénus',108]]).slice(0,3);
+   numberGame(b,P.map(([n,d])=>({q:`La Terre (150 millions de km) est représentée à 3 cm du Soleil. À combien de cm faut-il placer ${n}, à ${d.toLocaleString('fr-FR')} millions de km ?`,hint:`💡 Calcule ${d.toLocaleString('fr-FR')} ÷ 150, puis multiplie par 3. (Astuce : ça revient à diviser par 50.)`,a:d/50,e:`${d.toLocaleString('fr-FR')} ÷ 150 × 3 = <b>${fr(d/50)} cm</b>.`})),end)}}
+];
+function renderExHome(){
+  $('#exGrid').innerHTML=EXOS.map(x=>`<button class="ex" data-id="${x.id}"><span class="e">${x.e}</span><b>${x.t}</b><span class="muted" style="font-size:14px">${x.d}</span>${S.best[x.id]!=null?`<span class="best">⭐ Meilleur : ${S.best[x.id]}%</span>`:''}</button>`).join('');
+  $$('.ex').forEach(b=>b.onclick=()=>playEx(b.dataset.id));
+}
+function playEx(id){
+  const x=EXOS.find(e=>e.id===id);$('#exHome').style.display='none';const P=$('#exPlay');P.style.display='block';
+  P.innerHTML=`<div class="lesson-head"><button class="btn small ghost" id="exBack">← Ateliers</button><h2>${x.e} ${x.t}</h2></div><div class="card" id="exBox"></div>`;
+  $('#exBack').onclick=()=>{P.style.display='none';$('#exHome').style.display='block';renderExHome()};
+  const box=$('#exBox');
+  x.run(box,(score,n)=>{const pct=Math.round(score/n*100);const prev=S.best[id];if(prev==null||pct>prev){S.best[id]=pct}save();
+    const xp=score*5+(pct===100?15:0);setTimeout(()=>{addXP(xp);if(pct===100)confetti();
+      const end=document.createElement('div');end.className='score-box';
+      end.innerHTML=`<div class="big">${pct}%</div><h3>${pct===100?'Parfait ! 🌟':pct>=70?'Très bien ! 👏':pct>=50?'Pas mal, continue ! 💪':'Relis le cours et réessaie 📖'}</h3><p class="muted">+${xp} XP${prev!=null?` · ancien record : ${prev}%`:''}</p><div class="row" style="justify-content:center"><button class="btn main" id="exAgain">🔁 Rejouer</button><button class="btn" id="exList">Autres ateliers</button></div>`;
+      if(x.id==='qcm'||x.id==='vf'||x.id==='calc'){box.innerHTML='';}
+      box.appendChild(end);end.scrollIntoView({behavior:'smooth',block:'center'});
+      $('#exAgain').onclick=()=>playEx(id);$('#exList').onclick=()=>$('#exBack').click()},x.id==='qcm'||x.id==='vf'||x.id==='calc'?0:700)});
+}
+
+/* ============ CARTE MENTALE ============ */
+const MM=[
+ {n:'Système solaire',c:'#ffb84d',e:'🪐',l:['Soleil =\nune étoile','4 planètes\nrocheuses','4 planètes\ngazeuses']},
+ {n:'Mouvements',c:'#5cc8ff',e:'🔄',l:['Rotation\n23 h 56 = 1 jour','Révolution\n365,25 j = 1 an']},
+ {n:'Structure',c:'#e8875a',e:'🥚',l:['Croûte','Manteau','Noyau']},
+ {n:'Activité interne',c:'#ff6b85',e:'🌋',l:['Séismes\nfoyer, épicentre','Volcanisme\neffusif / explosif']},
+ {n:'Activité externe',c:'#3ddc97',e:'⛅',l:['Météorologie\ntemps court,\nzone locale','Climatologie\ntemps long,\nzone étendue','Cause : énergie\nsolaire inégale']}
+];
+let mmQuiz=false;
+function drawMM(){
+  const svg=$('#mm'),C=550,RB=250,RL=430;const total=MM.reduce((s,b)=>s+b.l.length,0);const step=360/total;let idx=0;let out='';
+  const pos=(a,r)=>[C+r*Math.cos((a-90)*Math.PI/180),C+r*Math.sin((a-90)*Math.PI/180)];
+  const multiline=(txt,x,y,fs)=>{const lines=txt.split('\n');return lines.map((t,i)=>`<tspan x="${x}" y="${y+(i-(lines.length-1)/2)*fs*1.15}">${t}</tspan>`).join('')};
+  let links='',nodes='';
+  MM.forEach((b,bi)=>{const angles=b.l.map(()=>(idx++ +.5)*step);const ba=angles.reduce((s,a)=>s+a,0)/angles.length;const [bx,by]=pos(ba,RB);
+    links+=`<path d="M${C} ${C} Q ${(C+bx)/2+10} ${(C+by)/2-10} ${bx} ${by}" stroke="${b.c}" stroke-width="7" fill="none" stroke-linecap="round"/>`;
+    b.l.forEach((t,li)=>{const [lx,ly]=pos(angles[li],RL);
+      links+=`<path class="mm-link" data-b="${bi}" d="M${bx} ${by} Q ${(bx+lx)/2} ${(by+ly)/2} ${lx} ${ly}" stroke="${b.c}" stroke-width="3.5" fill="none" opacity=".8"/>`;
+      const lines=t.split('\n').length,w=176,h=26+lines*22;
+      nodes+=`<g class="mm-leaf mm-node" data-b="${bi}" data-txt="${t.replace(/\n/g,'|')}"><rect x="${lx-w/2}" y="${ly-h/2}" width="${w}" height="${h}" rx="16" fill="#151c40" stroke="${b.c}" stroke-width="3"/><text class="mm-txt leaf-t" x="${lx}" y="${ly}" font-size="19">${multiline(t,lx,ly,19)}</text></g>`});
+    nodes+=`<g class="mm-node mm-branch" data-b="${bi}"><circle cx="${bx}" cy="${by}" r="78" fill="${b.c}"/><text class="mm-txt" x="${bx}" y="${by-22}" font-size="34">${b.e}</text><text class="mm-txt" x="${bx}" y="${by+20}" font-size="19" fill="#141414" style="fill:#151515">${multiline(b.n.replace(' ','\n'),bx,by+20,19)}</text></g>`});
+  out=links+`<g><circle cx="${C}" cy="${C}" r="100" fill="url(#mmc)"/><text class="mm-txt" x="${C}" y="${C-18}" font-size="48">🌍</text><text class="mm-txt" x="${C}" y="${C+32}" font-size="26" style="font-family:Fredoka">LA TERRE</text></g>`+nodes;
+  svg.innerHTML=`<defs><radialGradient id="mmc"><stop offset="0" stop-color="#4ea3ff"/><stop offset="1" stop-color="#1b4fa8"/></radialGradient></defs>`+out;
+  $$('.mm-branch',svg).forEach(g=>g.addEventListener('click',()=>{const b=g.dataset.b;const leaves=$$(`.mm-leaf[data-b="${b}"],.mm-link[data-b="${b}"]`,svg);const hide=!leaves[0].classList.contains('off');leaves.forEach(x=>x.classList.toggle('off',hide));beep(true)}));
+  $$('.mm-leaf',svg).forEach(g=>g.addEventListener('click',()=>{if(g.dataset.hidden==='1'){setLeaf(g,false);beep(true)}}));
+  applyQuiz();
+}
+function setLeaf(g,hide){const t=$('.leaf-t',g);const x=+t.getAttribute('x'),y=+t.getAttribute('y');g.dataset.hidden=hide?'1':'0';
+  if(hide){t.innerHTML=`<tspan x="${x}" y="${y}" font-size="34" fill="#ffb84d">?</tspan>`}else{const lines=g.dataset.txt.split('|');t.innerHTML=lines.map((s,i)=>`<tspan x="${x}" y="${y+(i-(lines.length-1)/2)*19*1.15}">${s}</tspan>`).join('')}}
+function applyQuiz(){$$('#mm .mm-leaf').forEach(g=>setLeaf(g,mmQuiz));$('#mmQuiz').classList.toggle('on',mmQuiz)}
+$('#mmAll').onclick=()=>$$('#mm .mm-leaf,#mm .mm-link').forEach(x=>x.classList.remove('off'));
+$('#mmNone').onclick=()=>$$('#mm .mm-leaf,#mm .mm-link').forEach(x=>x.classList.add('off'));
+$('#mmQuiz').onclick=()=>{mmQuiz=!mmQuiz;$$('#mm .mm-leaf,#mm .mm-link').forEach(x=>x.classList.remove('off'));applyQuiz()};
+
+/* ============ DÉMARRAGE ============ */
+renderXP();renderHome();renderExHome();drawMM();
+</script>
+</body>
+</html>
